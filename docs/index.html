@@ -24,7 +24,6 @@
     <script src="js/ethers-5.2.umd.min.js"></script>
     <script src="js/highlight.min.js"></script>
     <script src="all.js"></script>
-    <script src="bastardData.min.js"></script>
     <script src="deploymentData.js"></script>
 
     <link rel="apple-touch-icon" sizes="57x57" href="images/apple-icon-57x57.png">
@@ -54,11 +53,11 @@
             <b-navbar-brand to="./" variant="primary" v-b-popover.hover.bottom="'GlicPixxxSurfer'">
               GlicPixxxSurfer
             </b-navbar-brand>
-            <div v-for="item in getSelectedShowcase">
+            <!-- <div v-for="item in getSelectedShowcase">
               <b-link @click="addAsset(item)">
                 <b-avatar rounded="sm" variant="light" size="3.0rem" :src="getData[item].image" v-b-popover.hover.bottom="'#' + item" class="ml-2"></b-avatar>
               </b-link>
-            </div>
+            </div> -->
             <b-navbar-nav class="ml-auto">
               <b-button size="sm" variant="outline-primary" class="ml-4" @click="connect();" v-if="!connected">CONNECT WALLET</b-button>
               <b-button size="sm" variant="outline-primary" class="ml-4" @click="disconnect();" v-if="connected">DISCONNECT WALLET {{ account == null ? '' : account.substring(0, 10).toUpperCase() }}</b-button>
@@ -339,9 +338,6 @@
           bokkysBastards: [16, 22, 471, 722, 1133, 1147, 1197, 1322, 1406, 1835, 2289, 2893, 3053, 3291, 3316, 3569, 3998, 4046, 4113, 4209, 4272, 4618, 4777, 4793, 5601, 5654, 5710, 5775, 5856, 6090, 6285, 6626, 6632, 7008, 7214, 7222, 7432, 7492, 7567, 7694, 7721, 7776, 7831, 7850, 7884, 8621, 8693, 8895, 9040, 9158, 9362, 9374, 9401, 9490, 9740, 9759, 9881, 9911, 10050, 10178, 10252, 10375, 10449, 10456, 10564, 10661, 10724, 10729, 10735, 10834, 10901, 11100, 11140, 11258],
         },
         computed: {
-          getAllData() {
-            return ALLDATA;
-          },
           getCryptoPunksMarketAddress() {
             return CRYPTOPUNKSMARKETADDRESS;
           },
@@ -369,14 +365,14 @@
             // return results;
             // TODO: item.owned
             console.log("getData");
-            return ALLDATA;
+            return ALLDATA.slice(0, 100);
           },
           getCategories() {
             console.log("getCategories");
             let results = [];
             const collater = {};
-            for (let i in ALLDATA) {
-              const item = ALLDATA[i];
+            for (let i in this.getData) {
+              const item = this.getData[i];
               for (let k in item.attributes) {
                 const attribute = item.attributes[k];
                 const traitType = attribute.trait_type;
