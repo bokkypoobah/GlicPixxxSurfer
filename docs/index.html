@@ -56,7 +56,7 @@
             </b-navbar-brand>
             <div v-for="item in getSelectedShowcase">
               <b-link @click="addAsset(item)">
-                <b-avatar rounded="sm" variant="light" size="3.0rem" :src="getData[item].osimage" v-b-popover.hover.bottom="'#' + item" class="ml-2"></b-avatar>
+                <b-avatar rounded="sm" variant="light" size="3.0rem" :src="getData[item].image" v-b-popover.hover.bottom="'#' + item" class="ml-2"></b-avatar>
               </b-link>
             </div>
             <b-navbar-nav class="ml-auto">
@@ -77,7 +77,7 @@
                   <span v-if="selectedItemIsGIF"> - Frame {{ selectedItemFrame == null ? '(loading)' : selectedItemFrame }}</span>
                 </template>
                 <div class="d-block text-center">
-                  <img id="thegif1" :src="selectedTokenId == null ? null : getData[selectedTokenId].osimage" :rel:animated_src="selectedTokenId == null ? null : getData[selectedTokenId].osimage" width="400" height="400" rel:auto_play="0" rel:rubbable="1" class="pr-3" />
+                  <img id="thegif1" :src="selectedTokenId == null ? null : getData[selectedTokenId].image" :rel:animated_src="selectedTokenId == null ? null : getData[selectedTokenId].image" width="400" height="400" rel:auto_play="0" rel:rubbable="1" class="pr-3" />
                 </div>
                 <b-input-group v-if="selectedItemIsGIF">
                   <template #prepend>
@@ -95,59 +95,17 @@
 
             <b-tabs card v-model="tabIndex" align="right">
 
-              <b-tab title="Main Page">
-                <!-- <b-card-text>
-                  CONNECT WALLET and wait while some web3 calls retrieve the data. View your browser Developer Console for progress.
-                </b-card-text> -->
+              <!-- <b-tab title="Main Page">
                 <b-card header="Contracts" style="min-width: 48rem; max-width: 48rem;" class="mb-2">
                   <b-card-text>
-                    <!-- CryptoPunksMarket: <a :href="'https://etherscan.io/address/'  + getCryptoPunksMarketAddress + '#code'" target="_blank">{{ getCryptoPunksMarketAddress }}</a>
+                    {{ getData.slice(0, 1) }}
                     <br />
-                    CryptoPunksData: <a :href="'https://etherscan.io/address/'  + getCryptoPunksDataAddress + '#code'" target="_blank">{{ getCryptoPunksDataAddress }}</a>
-                    <br /> -->
-
-                    {{ getAllData[0] }}
+                    {{ getCategories }}
                   </b-card-text>
                 </b-card>
+              </b-tab> -->
 
-                <!-- <b-card header="Query" style="min-width: 48rem; max-width: 48rem;" class="mb-2">
-                  <b-card-text>
-                    <b-form-input type="text" size="sm" @change="retrieveData('tokenId')" v-model.trim="tokenId" debounce="600" placeholder="🔍 ID1" class="mb-2"></b-form-input>
-                  </b-card-text>
-                  <b-card-text>
-                    punkAttributes: {{ punkAttributes }}
-                  </b-card-text>
-                  <b-card-text v-if="punkImageSvg != null">
-                    <div id="punkSvg" style="background-color: #648595; width: 240px; height: 240px;"></div>
-                  </b-card-text>
-                  <b-card-text>
-                    punkImageSvg: {{ punkImageSvg }}
-                  </b-card-text>
-                  <b-card-text>
-                    punkImage: {{ punkImage }}
-                  </b-card-text>
-                </b-card> -->
-
-                <!-- <b-card-text>
-                  <b-row v-for="(row, rowIndex) in owners.reverse()" v-bind:key="rowIndex" class="m-0 p-0">
-                    <b-col v-for="(col, colIndex) in row" v-bind:key="colIndex" class="m-0 p-0">
-                      <div v-if="col == '0x000001f568875F378Bf6d170B790967FE429C81A'">
-                        <b-btn variant="danger" :href="'https://etherscan.io/address/' + col" class="m-0 p-0">
-                          {{ col.replace('0x0000000000000000000000000000000000000000', '').substring(2, 6) }}
-                        </b-btn>
-                      </div>
-                      <div v-else>
-                        <b-link :href="'https://etherscan.io/address/' + col">
-                          {{ col.replace('0x0000000000000000000000000000000000000000', '').substring(2, 6) }}
-                        </b-link>
-                      </div>
-                    </b-col>
-                  </b-row>
-                </b-card-text> -->
-              </b-tab>
-
-              <!--
-              <b-tab title="SEXY BASTARDS">
+              <b-tab title="SEXY GLICPIXXXVER002">
                 <b-card-text>
                   <div class="d-flex m-0 p-0" style="height: 37px;">
                     <div>
@@ -157,7 +115,7 @@
                       <b-button v-b-toggle.collapse-search size="sm" variant="none"><b-button size="sm" variant="link" class="m-0 p-0" v-b-popover.hover="'ADVANCED SERACH'" ><b-icon-filter shift-v="+1" font-scale="1.7"></b-icon-filter></b-button></b-button>
                     </div>
                     <div class="pl-2">
-                      <b-button size="sm" :pressed.sync="displayOwned" variant="outline-primary">MY SEXY BASTARDS</b-button>
+                      <b-button size="sm" :pressed.sync="displayOwned" variant="outline-primary">MY SEXY GLICPIXXXVER002</b-button>
                     </div>
                     <div class="pr-1 flex-grow-1">
                     </div>
@@ -200,7 +158,7 @@
                             </span>
                           </template>
                           <b-link @click="addAsset(record.tokenId)" v-b-popover.hover="'Click for details'">
-                            <b-img-lazy width="220%" :src="record.osimage" />
+                            <b-img-lazy width="220%" :src="record.image" />
                           </b-link>
                         </b-card>
                       </div>
@@ -220,7 +178,7 @@
                       </template>
                       <template #cell(image)="data">
                         <b-link @click="addAsset(data.item.tokenId)" v-b-popover.hover="'Click for details'">
-                          <b-img-lazy width="200%" :src="data.item.osimage" />
+                          <b-img-lazy width="200%" :src="data.item.image" />
                         </b-link>
                       </template>
                       <template #cell(description)="data">
@@ -237,7 +195,6 @@
                   </div>
                 </b-card-text>
               </b-tab>
-              -->
 
               <!--
               <b-tab title="MY FUCKING WALLET">
@@ -392,30 +349,34 @@
             return CRYPTOPUNKSDATAADDRESS;
           },
           getData() {
-            const results = [];
-            for (let i in BASTARDDATA) {
-              const item = BASTARDDATA[i];
-              item.mosaicurl = null;
-              for (let k in item.attributes) {
-                const attribute = item.attributes[k];
-                if (attribute.trait_type == 'HYPE TYPE') {
-                  if (attribute.value == 'HYPED AF (ANIMATED)') {
-                    if (item.tokenId < 9000) {
-                      item.mosaicurl = "hypedafmosaic/" + item.tokenId + ".png";
-                    }
-                  }
-                }
-              }
-              item.owned = this.tokensOwned[i] || false;
-              results.push(item);
-            }
-            return results;
+            // const results = [];
+            // for (let i in BASTARDDATA) {
+            //   const item = BASTARDDATA[i];
+            //   item.mosaicurl = null;
+            //   for (let k in item.attributes) {
+            //     const attribute = item.attributes[k];
+            //     if (attribute.trait_type == 'HYPE TYPE') {
+            //       if (attribute.value == 'HYPED AF (ANIMATED)') {
+            //         if (item.tokenId < 9000) {
+            //           item.mosaicurl = "hypedafmosaic/" + item.tokenId + ".png";
+            //         }
+            //       }
+            //     }
+            //   }
+            //   item.owned = this.tokensOwned[i] || false;
+            //   results.push(item);
+            // }
+            // return results;
+            // TODO: item.owned
+            console.log("getData");
+            return ALLDATA;
           },
           getCategories() {
+            console.log("getCategories");
             let results = [];
             const collater = {};
-            for (let i in BASTARDDATA) {
-              const item = BASTARDDATA[i];
+            for (let i in ALLDATA) {
+              const item = ALLDATA[i];
               for (let k in item.attributes) {
                 const attribute = item.attributes[k];
                 const traitType = attribute.trait_type;
@@ -449,7 +410,7 @@
             return collater;
           },
           getTotalSupply() {
-            return BASTARDDATA.length;
+            return ALLDATA.length;
           },
           getSearchResults() {
             let results = [];
@@ -457,7 +418,7 @@
               const d = this.getData[i];
               let include = true;
               if (this.displayOwned) {
-                include = d.owned;
+                include = d.owned || false;
               }
 
               function hasAttribute(data, searchString) {
@@ -631,7 +592,7 @@
           },
           async addAsset(tokenId) {
             const xhr = new XMLHttpRequest();
-            xhr.open('GET', this.getData[tokenId].osimage);
+            xhr.open('GET', this.getData[tokenId].image);
             const t = this;
             xhr.onload = function() {
               if (xhr.response.substring(0, 3) == "GIF") {
