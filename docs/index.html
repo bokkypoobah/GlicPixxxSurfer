@@ -1508,8 +1508,8 @@
         mounted() {
           if (localStorage.getItem('gpsOwners')) {
             this.owners = JSON.parse(localStorage.getItem('gpsOwners'));
-          } else {
-            this.owners = OWNERSSNAPSHOT;
+          // } else {
+          //   this.owners = OWNERSSNAPSHOT;
           }
           if (localStorage.getItem('gpsMetadatas')) {
             this.metadatas = JSON.parse(localStorage.getItem('gpsMetadatas'));
@@ -1522,8 +1522,8 @@
           }
           if (localStorage.getItem('gpsENSMap')) {
             this.ensMap = JSON.parse(localStorage.getItem('gpsENSMap'));
-          } else {
-            this.ensMap = ENSMAPSNAPSHOT;
+          // } else {
+          //   this.ensMap = ENSMAPSNAPSHOT;
           }
           if (localStorage.getItem('gpsTags')) {
             this.tags = JSON.parse(localStorage.getItem('gpsTags'));
