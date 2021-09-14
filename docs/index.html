@@ -124,7 +124,7 @@
               </div>
             </template>
 
-            <div v-if="processing == null && settings.searchAccount != null && settings.searchAccount.length > 0 && collatedOwners.length == 0">
+            <div v-if="processing == null && settings.searchAccount != null && settings.searchAccount.length > 0 && Object.keys(owners).length == 0">
               <b-jumbotron header="WEB3 CONNECTION REQUIRED" bg-variant="info" text-variant="white" border-variant="dark" class="m-5 p-5">
                 TO RETRIEVE ERC-721 TOKEN OWNERSHIP AND ENS INFOMRATION. YOU CAN CONTINUE USING THIS TOOL WITHOUT A CONNECTION BUT OWNER INFORMATION AND SEARCH WILL NOT WORK. CLICK ON THE BUTTON ON THE TOP RIGHT TO CONNECT. CLEAR THE OWNER SEARCH FIELD TO REMOVE THIS MESSAGE.
               </b-jumbotron>
@@ -224,9 +224,11 @@
                                 {{ '#' + record.tokenId }}
                               </b-link>
                             </b-form-checkbox>
+                          -->
                             <b-link v-if="cardImageSizeCurrent >= 300" :href="'https://opensea.io/accounts/' + owners[record.tokenId]" v-b-popover.hover="'VIEW OWNER ACCOUNT IN OPENSEA'" target="_blank">
                               {{ ensOrShortName(owners[record.tokenId], 14) }}
                             </b-link>
+                            <!--
                             <b-link v-if="cardImageSizeCurrent >= 300" size="sm" @click="settings.searchAccount = owners[record.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" variant="link">
                               <b-icon-search shift-v="+1" font-scale="0.8"></b-icon-search>
                             </b-link>
@@ -265,18 +267,21 @@
                           <b-img-lazy width="300%" :src="data.item.image.replace('https://gateway.pinata.cloud/', 'https://ipfs.io/')" />
                         </b-link>
                       </template>
-                      <!-- <template #cell(tokenId)="data">
+                      <template #cell(tokenId)="data">
+                        <!--
                         <b-form-checkbox @input="saveSettings('listViewSelection')" inline v-model="settings.selection[data.item.tokenId]">
                           <b-link :href="'https://www.bastardganpunks.club/v2/' + data.item.tokenId" v-b-popover.hover="'VIEW NFT IN ORIGNIAL WEBSHITE'" target="_blank">
                             {{ '#' + data.item.tokenId }}
                           </b-link>
                         </b-form-checkbox>
                         <br />
+                      -->
                         <span v-if="owners.length > 0">
                           <b-link :href="'https://opensea.io/accounts/' + owners[data.item.tokenId]" v-b-popover.hover="'VIEW OWNER ACCOUNT IN OPENSEA'" target="_blank">
                             <font size="-2">{{ ensOrShortName(owners[data.item.tokenId]) }}</font>
                           </b-link>
                         </span>
+                        <!--
                         <b-link size="sm" @click="settings.searchAccount = owners[data.item.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" variant="link">
                           <b-icon-search shift-v="+1" font-scale="0.8"></b-icon-search>
                         </b-link>
@@ -314,8 +319,8 @@
                             <b-badge size="sm" variant="light">{{ formatETH(osData[data.item.tokenId].lastSale.totalPrice) }}</b-badge>
                             {{ osData[data.item.tokenId].lastSale.symbol }} <font size="-2">{{ formatDate(osData[data.item.tokenId].lastSale.eventTimestamp) }}</font>
                           </b-button>
-                        </div>
-                      </template> -->
+                        </div> -->
+                      </template>
                       <template #cell(description)="data">
                         <span v-for="line in data.item.description.split('\n')">
                           <b>{{ line }}</b><br />
@@ -918,7 +923,7 @@
             console.log(new Date().toUTCString() + " recalculate(from: " + from + ") start");
 
             if (from != 'selectedTags') {
-              this.data = ALLDATA.slice(0, 500);
+              this.data = ALLDATA; // .slice(0, 1000);
               this.calculateTokensOwned();
               this.calculateCategories();
             }
@@ -1115,26 +1120,26 @@
 
           calculateCollatedOwners() {
             let results = [];
-            if (this.owners.length > 0) {
-              const collator = {};
-              for (let i in this.data) {
-                const item = this.data[i];
-                const owner = this.owners[i];
-                if (!collator[owner]) {
-                  collator[owner] = [];
-                }
-                collator[owner].push(item.tokenId);
-              }
-              for (const [key, value] of Object.entries(collator)) {
-                results.push({ owner: key, tokens: value, count: value.length });
-              }
-              results.sort(function(a, b) {
-                return a.count - b.count;
-              });
-              for (let i in results) {
-                results[i].index = i;
-              }
-            }
+            // if (this.owners.length > 0) {
+            //   const collator = {};
+            //   for (let i in this.data) {
+            //     const item = this.data[i];
+            //     const owner = this.owners[i];
+            //     if (!collator[owner]) {
+            //       collator[owner] = [];
+            //     }
+            //     collator[owner].push(item.tokenId);
+            //   }
+            //   for (const [key, value] of Object.entries(collator)) {
+            //     results.push({ owner: key, tokens: value, count: value.length });
+            //   }
+            //   results.sort(function(a, b) {
+            //     return a.count - b.count;
+            //   });
+            //   for (let i in results) {
+            //     results[i].index = i;
+            //   }
+            // }
             console.log(new Date().toUTCString() + " - calculateCollatedOwners() completed");
             return results;
           },
