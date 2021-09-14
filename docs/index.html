@@ -918,15 +918,15 @@
             console.log(new Date().toUTCString() + " recalculate(from: " + from + ") start");
 
             if (from != 'selectedTags') {
-              this.data = ALLDATA; // .slice(0, 100);
+              this.data = ALLDATA.slice(0, 500);
               this.calculateTokensOwned();
               this.calculateCategories();
             }
             this.tokensSearchResults = this.calculateSearchResults();
             this.collatedOwners = this.calculateCollatedOwners();
             console.log(new Date().toUTCString() + " recalculate(from: " + from + ") processOSData() begin");
-            await this.processOSData();
-            this.saveSettings();
+            // await this.processOSData();
+            // this.saveSettings();
             console.log(new Date().toUTCString() + " recalculate(from: " + from + ") processOSData() completed");
           },
 
@@ -948,25 +948,27 @@
           },
 
           calculateCategories() {
-            const collator = {};
-            for (let i in this.data) {
-              const item = this.data[i];
-              for (let k in item.attributes) {
-                const attribute = item.attributes[k];
-                const traitType = attribute.trait_type;
-                const value = attribute.value;
-                if (!collator[traitType]) {
-                  collator[traitType] = {};
-                }
-                if (!collator[traitType][value]) {
-                  collator[traitType][value] = 1;
-                } else {
-                  collator[traitType][value] = collator[traitType][value] + 1;
+            if (Object.keys(this.categories).length == 0) {
+              const collator = {};
+              for (let i in this.data) {
+                const item = this.data[i];
+                for (let k in item.attributes) {
+                  const attribute = item.attributes[k];
+                  const traitType = attribute.trait_type;
+                  const value = attribute.value;
+                  if (!collator[traitType]) {
+                    collator[traitType] = {};
+                  }
+                  if (!collator[traitType][value]) {
+                    collator[traitType][value] = 1;
+                  } else {
+                    collator[traitType][value] = collator[traitType][value] + 1;
+                  }
                 }
               }
+              console.log(new Date().toUTCString() + " - calculateCategories() completed");
+              this.categories = collator;
             }
-            console.log(new Date().toUTCString() + " - calculateCategories() completed");
-            this.categories = collator;
           },
 
           calculateSearchResults() {
@@ -1005,8 +1007,7 @@
             if (this.settings.mySexyBastards) {
               const account = this.account.toLowerCase();
               stage2Data = [];
-              for (let i in stage1Data) {
-                const d = stage1Data[i];
+              for (let d of stage1Data) {
                 const owner = this.owners[d.tokenId];
                 if (owner && owner.toLowerCase() == account) {
                   stage2Data.push(d);
@@ -1028,8 +1029,7 @@
                 }
               }
               stage3Data = [];
-              for (let i in stage2Data) {
-                const d = stage2Data[i];
+              for (let d of stage2Data) {
                 if (tokenIds[d.tokenId]) {
                   stage3Data.push(d);
                 }
@@ -1232,42 +1232,36 @@
               if (network.chainId == 1) {
                 this.connected = true;
 
-                // const yourBastardYourCall = new ethers.Contract(YOURBASTARDYOURCALLADDRESS, YOURBASTARDYOURCALLABI, provider);
-                // const result = await yourBastardYourCall.showLicenseForBASTARD(2, 10932);
-                // console.log("showLicenseForBASTARD(2, 10932): " + JSON.stringify(result));
-
-                const yourBastardYourCallHelper = new ethers.Contract(YOURBASTARDYOURCALLHELPERADDRESS, YOURBASTARDYOURCALLHELPERABI, provider);
-                // const result2 = await yourBastardYourCallHelper.getMetadata(2, 10800, 10935);
-                // console.log("yourBastardYourCallHelper.getMetadata(2, 10800, 10935): " + JSON.stringify(result2));
+                // const yourBastardYourCallHelper = new ethers.Contract(YOURBASTARDYOURCALLHELPERADDRESS, YOURBASTARDYOURCALLHELPERABI, provider);
 
                 const erc721Helper = new ethers.Contract(ERC721HELPERADDRESS, ERC721HELPERABI, provider);
-                const info = await erc721Helper.tokenInfo(BASTARDADDRESS);
+                const info = await erc721Helper.tokenInfo(GLICPIXXXVER002ADDRESS);
                 const totalSupply = parseInt(info[2].toString());
                 console.log(new Date().toUTCString() + " info:" + JSON.stringify(info));
 
-                const metadatas = [];
-                const METADATABATCHSIZE = 200; // 500 OK
-                for (let i = 0; i < totalSupply; i += METADATABATCHSIZE) {
-                  const to = (i + METADATABATCHSIZE > totalSupply) ? totalSupply : i + METADATABATCHSIZE;
-                  this.processing = "RETRIEVING LIVE BGANPUNKSV2 YOURBASTARDYOURCALL METADATA FROM THE ETHEREUM MAINNET: " + ethers.utils.commify(i) + " - " + ethers.utils.commify(parseInt(to) - 1) + " OF " + ethers.utils.commify(totalSupply);
-
-                  const metadataResult = await yourBastardYourCallHelper.getMetadata(2, i, to);
-                  console.log(new Date().toUTCString() + " getMetadata from: " + i + ", to: " + to + ", size: " + JSON.stringify(metadataResult));
-                  for (let j = 0; j < metadataResult.length; j++) {
-                    metadatas.push(metadataResult[j]);
-                  }
-                }
-                this.metadatas = metadatas;
-                // console.log("const METADATASSNAPSHOTTIMESTAMP=" + new Date().getTime() + ";");
-                // console.log("const METADATASSNAPSHOT=" + JSON.stringify(metadatas) + ";");
-                localStorage.setItem('gpsMetadatas', JSON.stringify(metadatas));
+                // const metadatas = [];
+                // const METADATABATCHSIZE = 200; // 500 OK
+                // for (let i = 0; i < totalSupply; i += METADATABATCHSIZE) {
+                //   const to = (i + METADATABATCHSIZE > totalSupply) ? totalSupply : i + METADATABATCHSIZE;
+                //   this.processing = "RETRIEVING LIVE BGANPUNKSV2 YOURBASTARDYOURCALL METADATA FROM THE ETHEREUM MAINNET: " + ethers.utils.commify(i) + " - " + ethers.utils.commify(parseInt(to) - 1) + " OF " + ethers.utils.commify(totalSupply);
+                //
+                //   const metadataResult = await yourBastardYourCallHelper.getMetadata(2, i, to);
+                //   console.log(new Date().toUTCString() + " getMetadata from: " + i + ", to: " + to + ", size: " + JSON.stringify(metadataResult));
+                //   for (let j = 0; j < metadataResult.length; j++) {
+                //     metadatas.push(metadataResult[j]);
+                //   }
+                // }
+                // this.metadatas = metadatas;
+                // // console.log("const METADATASSNAPSHOTTIMESTAMP=" + new Date().getTime() + ";");
+                // // console.log("const METADATASSNAPSHOT=" + JSON.stringify(metadatas) + ";");
+                // localStorage.setItem('gpsMetadatas', JSON.stringify(metadatas));
 
                 const owners = [];
                 const NFTOWNERBATCHSIZE = 200; // 500 OK
                 for (let i = 0; i < totalSupply; i += NFTOWNERBATCHSIZE) {
                   const to = (i + NFTOWNERBATCHSIZE > totalSupply) ? totalSupply : i + NFTOWNERBATCHSIZE;
-                  this.processing = "RETRIEVING LIVE BGANPUNKSV2 ONWERSHIP RECORDS FROM THE ETHEREUM MAINNET: " + ethers.utils.commify(i) + " - " + ethers.utils.commify(parseInt(to) - 1) + " OF " + ethers.utils.commify(totalSupply);
-                  const ownersResult = await erc721Helper.owners(BASTARDADDRESS, i, to);
+                  this.processing = "RETRIEVING LIVE GLICPIXXXVER002 ONWERSHIP RECORDS FROM THE ETHEREUM MAINNET: " + ethers.utils.commify(i) + " - " + ethers.utils.commify(parseInt(to) - 1) + " OF " + ethers.utils.commify(totalSupply);
+                  const ownersResult = await erc721Helper.owners(GLICPIXXXVER002ADDRESS, i, to);
                   console.log(new Date().toUTCString() + " from: " + i + ", to: " + to + ", size: " + ownersResult[0].length);
                   for (let j = 0; j < ownersResult[0].length; j++) {
                     owners.push(ownersResult[1][j]);
