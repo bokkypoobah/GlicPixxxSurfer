@@ -220,16 +220,16 @@
                           </b-link>
                           <!-- <b-card-text>
                             <b-form-checkbox @input="saveSettings('cardViewSelection')" inline v-model="settings.selection[record.tokenId]">
+                            -->
                               <b-link :href="'https://www.bastardganpunks.club/v2/' + record.tokenId" v-b-popover.hover="'VIEW NFT IN ORIGNIAL WEBSHITE'" target="_blank">
                                 {{ '#' + record.tokenId }}
                               </b-link>
+                              <!--
                             </b-form-checkbox>
                           -->
-                            <!--
                             <b-link v-if="cardImageSizeCurrent >= 300" :href="'https://opensea.io/accounts/' + owners[record.tokenId]" v-b-popover.hover="'VIEW OWNER ACCOUNT IN OPENSEA'" target="_blank">
                               {{ ensOrShortName(owners[record.tokenId], 14) }}
                             </b-link>
-                          -->
                             <!--
                             <b-link v-if="cardImageSizeCurrent >= 300" size="sm" @click="settings.searchAccount = owners[record.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" variant="link">
                               <b-icon-search shift-v="+1" font-scale="0.8"></b-icon-search>
@@ -278,13 +278,15 @@
                         </b-form-checkbox>
                         <br />
                       -->
-                        <!--
-                        <span v-if="owners.length > 0">
+                        <span v-if="Object.keys(owners).length > 0">
+                          <b-link :href="'https://opensea.io/assets/0x1c60841b70821dca733c9b1a26dbe1a33338bd43/' + data.item.tokenId" v-b-popover.hover="'VIEW NFT IN OS'" target="_blank">
+                            {{ '#' + data.item.tokenId }}
+                          </b-link>
                           <b-link :href="'https://opensea.io/accounts/' + owners[data.item.tokenId]" v-b-popover.hover="'VIEW OWNER ACCOUNT IN OPENSEA'" target="_blank">
                             <font size="-2">{{ ensOrShortName(owners[data.item.tokenId]) }}</font>
+                            <!-- <font size="-2">{{ owners[data.item.tokenId] }}</font> -->
                           </b-link>
                         </span>
-                        -->
                         <!--
                         <b-link size="sm" @click="settings.searchAccount = owners[data.item.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" variant="link">
                           <b-icon-search shift-v="+1" font-scale="0.8"></b-icon-search>
@@ -326,13 +328,89 @@
                         </div> -->
                       </template>
                       <template #cell(description)="data">
-                        <span v-for="line in data.item.description.split('\n')">
+                        <!-- <span v-for="line in data.item.description.split('\n')">
                           <b>{{ line }}</b><br />
-                        </span>
+                        </span> -->
                       </template>
                       <template #cell(attributes)="data">
                         <b-row v-for="(attribute, i) in data.item.attributes"  v-bind:key="i" class="m-0 p-0">
-                          <b-col class="m-0 p-0"><font size="-3">{{ attribute.trait_type }}</font></b-col><b-col class="m-0 p-0"><b><font size="-2">{{ attribute.value }}</font></b></font></b-col>
+                          <b-col cols="3" class="m-0 p-0"><font size="-3">{{ attribute.trait_type }}</font></b-col><b-col class="m-0 p-0"><b><font size="-2">{{ attribute.value }}</font></b></b-col>
+                        </b-row>
+                        <hr />
+                        <b-row class="m-0 p-0">
+                          <b-col cols="3" class="m-0 p-0"><font size="-3">Name</font></b-col><b-col class="m-0 p-0"><b><font size="-2">{{ data.item.name }}</font></b></b-col>
+                        </b-row>
+                        <b-row class="m-0 p-0">
+                          <b-col cols="3" class="m-0 p-0"><font size="-3">Description</font></b-col><b-col class="m-0 p-0"><b><font size="-2">{{ data.item.description }}</font></b></b-col>
+                        </b-row>
+                        <b-row v-if="data.item.dominantColor" class="m-0 p-0">
+                          <b-col cols="3" class="m-0 p-0"><font size="-3">Dominant Color</font></b-col>
+                          <b-col class="m-0 p-0">
+                            <b-row v-for="(v, k) in data.item.dominantColor"  v-bind:key="k" class="m-0 p-0">
+                              <b-col cols="2" class="m-0 p-0"><font size="-3">{{ k }}</font></b-col><b-col class="m-0 p-0"><b><font size="-2">{{ v }}</font></b></b-col>
+                            </b-row>
+                          </b-col>
+                        </b-row>
+                        <b-row class="m-0 p-0">
+                          <b-col cols="3" class="m-0 p-0"><font size="-3">Filename</font></b-col><b-col class="m-0 p-0"><b><font size="-2">{{ data.item.fileName }}</font></b></b-col>
+                        </b-row>
+                        <b-row class="m-0 p-0">
+                          <b-col cols="3" class="m-0 p-0"><font size="-3">External URL</font></b-col>
+                          <b-col class="m-0 p-0">
+                            <b-link :href="data.item.external_url" v-b-popover.hover="'VIEW IMAGE (NOTE THAT THE PAGE CANNOT BE FOUND. ERROR IN SOURCE DATA?)'" target="_blank">
+                              <b><font size="-2">{{ data.item.external_url }}</font></b>
+                            </b-link>
+                          </b-col>
+                        </b-row>
+                        <b-row class="m-0 p-0">
+                          <b-col cols="3" class="m-0 p-0"><font size="-3">Image</font></b-col>
+                          <b-col class="m-0 p-0">
+                            <b-row class="m-0 p-0">
+                              <b-col cols="2" class="m-0 p-0"><font size="-3">Original</font></b-col>
+                              <b-col class="m-0 p-0">
+                                <b-link :href="data.item.image" v-b-popover.hover="'VIEW IMAGE'" target="_blank">
+                                  <b><font size="-2">{{ data.item.image }}</font></b>
+                                </b-link>
+                              </b-col>
+                            </b-row>
+                            <b-row class="m-0 p-0">
+                              <b-col cols="2" class="m-0 p-0"><font size="-3">ipfs.io</font></b-col>
+                              <b-col class="m-0 p-0">
+                                <b-link :href="ipfsPrefix + data.item.image.replace('https://gateway.pinata.cloud/ipfs/', '')" v-b-popover.hover="'VIEW IMAGE'" target="_blank">
+                                  <b><font size="-2">{{ ipfsPrefix + data.item.image.replace('https://gateway.pinata.cloud/ipfs/', '') }}</font></b>
+                                </b-link>
+                              </b-col>
+                            </b-row>
+                          </b-col>
+                        </b-row>
+                        <b-row class="m-0 p-0">
+                          <b-col cols="3" class="m-0 p-0"><font size="-3">Image IPFS</font></b-col>
+                          <b-col class="m-0 p-0">
+                            <b-row v-for="(v, k) in data.item.image_ipfs"  v-bind:key="k" class="m-0 p-0">
+                              <b-col cols="2" class="m-0 p-0"><font size="-3">{{ k }}</font></b-col>
+                              <b-col class="m-0 p-0">
+                                <b-link :href="ipfsPrefix + v" v-b-popover.hover="'VIEW IMAGE'" target="_blank">
+                                  <b><font size="-2">{{ v }}</font></b>
+                                </b-link>
+                              </b-col>
+                            </b-row>
+                          </b-col>
+                        </b-row>
+                        <b-row v-if="data.item.frame_order" class="m-0 p-0">
+                          <b-col cols="3" class="m-0 p-0"><font size="-3">Frame Order</font></b-col><b-col class="m-0 p-0"><b><font size="-2">{{ data.item.frame_order }}</font></b></b-col>
+                        </b-row>
+                        <b-row v-if="data.item.hyped_source_images_ipfs" class="m-0 p-0">
+                          <b-col cols="3" class="m-0 p-0"><font size="-3">Hyped Source Images IPFS</font></b-col>
+                          <b-col class="m-0 p-0">
+                            <b-row v-for="(v, k) in data.item.hyped_source_images_ipfs"  v-bind:key="k" class="m-0 p-0">
+                              <b-col cols="2" class="m-0 p-0"><font size="-3">{{ k }}</font></b-col>
+                              <b-col class="m-0 p-0">
+                                <b-link :href="ipfsPrefix + v" v-b-popover.hover="'VIEW IMAGE'" target="_blank">
+                                  <b><font size="-2">{{ v }}</font></b>
+                                </b-link>
+                              </b-col>
+                            </b-row>
+                          </b-col>
                         </b-row>
                       </template>
                     </b-table>
@@ -417,6 +495,7 @@
                 </b-card-text>
               </b-tab> -->
 
+              <!--
               <b-tab title="SYNC DATA">
                 <b-card-text>
                   <b-button size="sm" @click="loadOSData()" variant="outline-primary">
@@ -427,7 +506,9 @@
                    TAKES ~ 6 MINUTES. YOU CAN CONTINUE BROWSING THE BEAUTIFUL BASTARDS WHILE THIS PROCESS RUNS IN THE BACKGROUND.
                 </b-card-text>
               </b-tab>
+              -->
 
+              <!--
               <b-tab lazy title="OWNERS">
                 <b-card-text>
                   <div class="d-flex m-0 p-0" style="height: 37px;">
@@ -468,6 +549,7 @@
                   </b-table>
                 </b-card-text>
               </b-tab>
+            -->
 
               <!-- <b-tab lazy title="CATEGORIES">
                 <b-card-text>
@@ -639,7 +721,7 @@
           account: null,
           groups: [ ],
           tokensOwned: [],
-          owners: [],
+          owners: {},
           metadatas: [],
           metadataDirtyFlag: [],
           ensMap: {},
@@ -656,6 +738,8 @@
 
           data: [],
           categories: {},
+
+          ipfsPrefix: 'https://ipfs.io/ipfs/',
 
           settings: {
             mySexyBastards: false,
@@ -736,9 +820,9 @@
           categoryFilter: {},
           fields: [
             { key: 'image', label: 'BASTARD', thStyle: 'width: 25%;' },
-            { key: 'tokenId', label: 'INFO', thStyle: 'width: 25%;' },
-            { key: 'attributes', label: 'ATTRIBUTES', thStyle: 'width: 25%;' },
-            { key: 'description', label: 'LYRICS', thStyle: 'width: 25%;' },
+            { key: 'tokenId', label: 'INFO', thStyle: 'width: 15%;' },
+            { key: 'attributes', label: 'ATTRIBUTES', thStyle: 'width: 60%;' },
+            // { key: 'description', label: 'ADDITIONAL IMAGES', thStyle: 'width: 25%;' },
           ],
           sellOrdersFields: [
             { key: 'eth', label: 'ETH' },
@@ -1265,7 +1349,7 @@
                 // // console.log("const METADATASSNAPSHOT=" + JSON.stringify(metadatas) + ";");
                 // localStorage.setItem('gpsMetadatas', JSON.stringify(metadatas));
 
-                const owners = [];
+                const owners = {};
                 const NFTOWNERBATCHSIZE = 200; // 500 OK
                 for (let i = 0; i < totalSupply; i += NFTOWNERBATCHSIZE) {
                   const to = (i + NFTOWNERBATCHSIZE > totalSupply) ? totalSupply : i + NFTOWNERBATCHSIZE;
@@ -1273,7 +1357,7 @@
                   const ownersResult = await erc721Helper.owners(GLICPIXXXVER002ADDRESS, i, to);
                   console.log(new Date().toUTCString() + " from: " + i + ", to: " + to + ", size: " + ownersResult[0].length);
                   for (let j = 0; j < ownersResult[0].length; j++) {
-                    owners.push(ownersResult[1][j]);
+                    owners[ownersResult[0][j]] = ownersResult[1][j];
                   }
                 }
                 this.owners = owners;
@@ -1281,10 +1365,10 @@
                 // console.log("const OWNERSSNAPSHOT=" + JSON.stringify(owners) + ";");
                 localStorage.setItem('gpsOwners', JSON.stringify(owners));
                 const ensMap = {};
-                for (let i in owners) {
-                  const owner = owners[i].toLowerCase();
+                for (const [key, value] of Object.entries(owners)) {
+                  const owner = value.toLowerCase();
                   if (!ensMap[owner]) {
-                    ensMap[owner] = owners[i];
+                    ensMap[owner] = owner;
                   }
                 }
                 ensMap[this.account.toLowerCase()] = this.account;
@@ -1364,7 +1448,7 @@
           // --- GIF Frame Extraction ---
           async displayToken(tokenId) {
             const xhr = new XMLHttpRequest();
-            xhr.open('GET', this.data[tokenId].images[0]);
+            xhr.open('GET', this.getData[tokenId].image);
             const t = this;
             xhr.onload = function() {
               if (xhr.response.substring(0, 3) == "GIF") {
