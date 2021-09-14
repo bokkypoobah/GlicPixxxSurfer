@@ -225,9 +225,11 @@
                               </b-link>
                             </b-form-checkbox>
                           -->
+                            <!--
                             <b-link v-if="cardImageSizeCurrent >= 300" :href="'https://opensea.io/accounts/' + owners[record.tokenId]" v-b-popover.hover="'VIEW OWNER ACCOUNT IN OPENSEA'" target="_blank">
                               {{ ensOrShortName(owners[record.tokenId], 14) }}
                             </b-link>
+                          -->
                             <!--
                             <b-link v-if="cardImageSizeCurrent >= 300" size="sm" @click="settings.searchAccount = owners[record.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" variant="link">
                               <b-icon-search shift-v="+1" font-scale="0.8"></b-icon-search>
@@ -276,11 +278,13 @@
                         </b-form-checkbox>
                         <br />
                       -->
+                        <!--
                         <span v-if="owners.length > 0">
                           <b-link :href="'https://opensea.io/accounts/' + owners[data.item.tokenId]" v-b-popover.hover="'VIEW OWNER ACCOUNT IN OPENSEA'" target="_blank">
                             <font size="-2">{{ ensOrShortName(owners[data.item.tokenId]) }}</font>
                           </b-link>
                         </span>
+                        -->
                         <!--
                         <b-link size="sm" @click="settings.searchAccount = owners[data.item.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" variant="link">
                           <b-icon-search shift-v="+1" font-scale="0.8"></b-icon-search>
