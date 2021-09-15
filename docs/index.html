@@ -66,7 +66,7 @@
             </b-navbar-brand>
             <div v-for="item in getHeaderBastards">
               <b-link @click="displayToken(item)">
-                <b-avatar rounded="sm" variant="light" size="3.0rem" :src="data[item] ? data[item].image.replace('https://gateway.pinata.cloud/', 'https://ipfs.io/') : null" v-b-popover.hover.bottom="'#' + item" class="ml-2"></b-avatar>
+                <b-avatar rounded="sm" variant="light" size="3.0rem" :src="data[item] ? ipfsPrefix + data[item].image : null" v-b-popover.hover.bottom="'#' + item" class="ml-2"></b-avatar>
               </b-link>
             </div>
             <b-navbar-nav class="ml-auto">
@@ -222,8 +222,8 @@
                     <b-card-group deck>
                       <div v-for="record in pagedTokensResults">
                         <b-card body-class="p-1" header-class="p-1" footer-class="p-1" img-top class="m-1 p-0 border-0">
-                          <b-link @click="displayToken(record.tokenId)" v-b-popover.hover="'CLICK FOR DETAILS'">
-                            <b-img-lazy :width="cardImageSizeCurrent + '%'" :src="record.image.replace('https://gateway.pinata.cloud/', 'https://ipfs.io/')" />
+                          <b-link :download="filenamePrefix + record.tokenId + '_' + record.image" @click="displayToken(record.tokenId)" v-b-popover.hover="'CLICK FOR DETAILS'">
+                            <b-img-lazy :width="cardImageSizeCurrent + '%'" :src="ipfsPrefix + record.image" />
                           </b-link>
                           <b-card-text>
                             <!--
@@ -273,8 +273,8 @@
                   <div v-if="!settings.cardView">
                     <b-table small :fields="fields" :items="pagedTokensResults" responsive="sm">
                       <template #cell(image)="data">
-                        <b-link :download="'glicpixxxver002_' + data.item.tokenId" @click="displayToken(data.item.tokenId)" v-b-popover.hover="'Click for details'">
-                          <b-img-lazy width="300%" :src="data.item.image.replace('https://gateway.pinata.cloud/', 'https://ipfs.io/')" />
+                        <b-link :download="filenamePrefix + data.item.tokenId + '_' + data.item.image" @click="displayToken(data.item.tokenId)" v-b-popover.hover="'Click for details'">
+                          <b-img-lazy width="300%" :src="ipfsPrefix + data.item.image" />
                         </b-link>
                       </template>
                       <template #cell(tokenId)="data">
@@ -373,22 +373,10 @@
                         <b-row class="m-0 p-0">
                           <b-col cols="3" class="m-0 p-0"><font size="-3">Image</font></b-col>
                           <b-col class="m-0 p-0">
-                            <b-row class="m-0 p-0">
-                              <b-col cols="2" class="m-0 p-0"><font size="-3">Original</font></b-col>
-                              <b-col class="m-0 p-0">
-                                <b-link :href="data.item.image" v-b-popover.hover="'VIEW IMAGE'" target="_blank">
-                                  <b><font size="-2">{{ data.item.image }}</font></b>
-                                </b-link>
-                              </b-col>
-                            </b-row>
-                            <b-row class="m-0 p-0">
-                              <b-col cols="2" class="m-0 p-0"><font size="-3">ipfs.io</font></b-col>
-                              <b-col class="m-0 p-0">
-                                <b-link :href="ipfsPrefix + data.item.image.replace('https://gateway.pinata.cloud/ipfs/', '')" v-b-popover.hover="'VIEW IMAGE'" target="_blank">
-                                  <b><font size="-2">{{ ipfsPrefix + data.item.image.replace('https://gateway.pinata.cloud/ipfs/', '') }}</font></b>
-                                </b-link>
-                              </b-col>
-                            </b-row>
+                            <!-- TODO: File rename not working -->
+                            <b-link :download="filenamePrefix + data.item.tokenId + '_' + data.item.image" :href="ipfsPrefix + data.item.image" v-b-popover.hover="'VIEW IMAGE'" target="_blank">
+                              <b><font size="-2">{{ data.item.image }}</font></b>
+                            </b-link>
                           </b-col>
                         </b-row>
                         <b-row class="m-0 p-0">
@@ -752,6 +740,7 @@
           categoryOptions: {},
 
           ipfsPrefix: 'https://ipfs.io/ipfs/',
+          filenamePrefix: 'glicpixxxver002_',
 
           settings: {
             mySexyBastards: false,
@@ -1670,7 +1659,7 @@
           }
           if (localStorage.getItem('gpsSettings')) {
             const savedSettings = JSON.parse(localStorage.getItem('gpsSettings'));
-            if ('mintedOption' in savedSettings) {
+            if ('filenamePrefix' in savedSettings) {
               this.settings = savedSettings;
             }
           }
