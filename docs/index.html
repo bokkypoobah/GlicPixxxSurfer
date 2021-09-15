@@ -71,7 +71,8 @@
             </div> -->
             <b-navbar-nav class="ml-auto">
               <b-button size="sm" variant="outline-primary" class="ml-4" v-b-popover.hover="'CONNECT TO SEE YOUR BASTARDS'" @click="connect();" v-if="!connected">CONNECT WALLET</b-button>
-              <b-button size="sm" variant="outline-primary" class="ml-4" v-b-popover.hover="'DISCONNECT TO SEE BOKKY\'S BASTARDS'" @click="disconnect();" v-if="connected">{{ ensOrShortName(account) }}</b-button>
+              <!-- <b-button size="sm" variant="outline-primary" class="ml-4" v-b-popover.hover="'DISCONNECT TO SEE BOKKY\'S BASTARDS'" @click="disconnect();" v-if="connected">{{ ensOrShortName(account) }}</b-button> -->
+              <b-button size="sm" variant="outline-primary" class="ml-4" v-b-popover.hover="'DISCONNECT TO SEE BOKKY\'S BASTARDS'" @click="disconnect();" v-if="connected">{{ account }}</b-button>
             </b-navbar-nav>
           </b-navbar>
         </div>
@@ -103,8 +104,9 @@
 
             <template>
               <div>
-                <b-sidebar right id="sidebar-border" sidebar-class="border-right border-danger">
-                  <div v-for="(categoryKey, categoryIndex) in Object.keys(categories).sort()" v-bind:key="categoryIndex">
+                <b-sidebar lazy right id="sidebar-border" sidebar-class="border-right border-danger">
+                  <!-- <div v-for="(categoryKey, categoryIndex) in Object.keys(categories).sort()" v-bind:key="categoryIndex"> -->
+                  <div v-for="(categoryOption, categoryKey) in categoryOptions" v-bind:key="categoryKey">
                     <b-card body-class="p-0" header-class="m-0 p-0 pl-2" footer-class="p-1" class="m-3 p-0">
                       <template #header>
                         <span variant="secondary" class="small truncate">
@@ -112,7 +114,8 @@
                         </span>
                       </template>
                       <font size="-2">
-                        <b-table small fixed striped sticky-header="200px" :fields="categoryFields" :items="getSortedValuesForCategory(categoryKey)" head-variant="light">
+                        <!-- <b-table small fixed striped sticky-header="200px" :fields="categoryFields" :items="getSortedValuesForCategory(categoryKey)" head-variant="light"> -->
+                        <b-table small fixed striped sticky-header="200px" :fields="categoryFields" :items="categoryOption" head-variant="light">
                           <template #cell(select)="data">
                             <b-form-checkbox @change="filterChange(categoryKey, data.item.categoryOption)"></b-form-checkbox>
                           </template>
@@ -185,20 +188,23 @@
                             <b-card-text>
                               <b-form-input type="text" size="sm" @change="recalculate('searchTokenId')" v-model.trim="settings.searchTokenId" debounce="600" placeholder="🔍 ID1, ID2-ID3, ..." class="mb-2"></b-form-input>
                               <b-form-input type="text" size="sm" @change="recalculate('searchAccount')" v-model.trim="settings.searchAccount" debounce="600" placeholder="🔍 ENS1, ADDY2, ..." class="mb-2"></b-form-input>
-                              <b-form-input type="text" size="sm" @change="recalculate('searchLyrics')" v-model.trim="settings.searchLyrics" debounce="600" placeholder="🔍 LYRICS" class="mb-2"></b-form-input>
-                              <b-form-checkbox @change="recalculate('searchForSaleOnly')" v-model.trim="settings.searchForSaleOnly" debounce="600">For Sale Only (coming)</b-form-checkbox>
+                              <!-- <b-form-input type="text" size="sm" @change="recalculate('searchLyrics')" v-model.trim="settings.searchLyrics" debounce="600" placeholder="🔍 LYRICS" class="mb-2"></b-form-input> -->
+                              <!-- <b-form-checkbox @change="recalculate('searchForSaleOnly')" v-model.trim="settings.searchForSaleOnly" debounce="600">For Sale Only (coming)</b-form-checkbox> -->
                             </b-card-text>
                           </b-card>
+                          <!--
                           <b-card header="FILTER BY TAGS" style="min-width: 18rem; max-width: 18rem;" class="mb-2">
                             <b-card-text>
                               <b-form-select size="sm" @change="recalculate('selectedTags')" v-model="selectedTags" :options="getTags" multiple :select-size="10" variant="outline-primary"></b-form-select>
                             </b-card-text>
                           </b-card>
+                          -->
                           <!-- <b-card header="FILTER BY CATEGORIES" style="min-width: 18rem; max-width: 18rem;" class="mb-2">
                             <b-card-text>
                               <b-form-select size="sm" @change="recalculate('selectedCategories')" v-model="selectedCategories" :options="getCategories" multiple :select-size="10" variant="outline-primary"></b-form-select>
                             </b-card-text>
                           </b-card> -->
+                          <!--
                           <b-card header="SELECTION TOOLS" style="min-width: 18rem; max-width: 18rem;" class="mb-2">
                             <b-card-text>
                               {{ getSelectedTokenIds }}<br />
@@ -206,6 +212,7 @@
                               <b-button size="sm" @click="settings.selection = {}; saveSettings('resetSelection')" variant="outline-primary" v-b-popover.hover="'RESET SELECTION'"><b-icon-trash shift-v="+1" font-scale="1.0"></b-icon-trash></b-button>
                             </b-card-text>
                           </b-card>
+                          -->
                         </b-card-group>
                       </b-card>
                     </b-collapse>
@@ -568,6 +575,7 @@
                 </b-card-text>
               </b-tab> -->
 
+              <!--
               <b-tab title="SETTINGS">
                 <b-card-text>
                   <div class="d-flex m-0 p-0" style="height: 15px;">
@@ -630,6 +638,7 @@
                   </b-card>
                 </div>
               </b-tab>
+              -->
 
               <b-tab title="INFO">
                 <h6 class="mb-1">WHAT IS THIS WEBSHITE ABOUT?</h6>
@@ -737,7 +746,9 @@
           randomise: false,
 
           data: [],
-          categories: {},
+          // categories: {},
+          // categoryKeys: [],
+          categoryOptions: {},
 
           ipfsPrefix: 'https://ipfs.io/ipfs/',
 
@@ -885,24 +896,24 @@
           },
           getTags() {
             const collator = {};
-            for (const [key, value] of Object.entries(this.tags)) {
-              for (let i = 0; i < value.length; i++) {
-                const tag = value[i];
-                if (!collator[tag]) {
-                  collator[tag] = 1;
-                } else {
-                  collator[tag] = parseInt(collator[tag]) + 1;
-                }
-              }
-            }
-            let results = [];
-            for (const [key, value] of Object.entries(collator)) {
-              results.push({ value: key, text: key + ' (' + value + ')' });
-            }
-            results.sort(function(a, b) {
-              return a.value.localeCompare(b.value);
-            });
-            results.unshift({ value: null, text: '(All)' });
+            // for (const [key, value] of Object.entries(this.tags)) {
+            //   for (let i = 0; i < value.length; i++) {
+            //     const tag = value[i];
+            //     if (!collator[tag]) {
+            //       collator[tag] = 1;
+            //     } else {
+            //       collator[tag] = parseInt(collator[tag]) + 1;
+            //     }
+            //   }
+            // }
+            // let results = [];
+            // for (const [key, value] of Object.entries(collator)) {
+            //   results.push({ value: key, text: key + ' (' + value + ')' });
+            // }
+            // results.sort(function(a, b) {
+            //   return a.value.localeCompare(b.value);
+            // });
+            // results.unshift({ value: null, text: '(All)' });
             return results;
           },
           getCategories() {
@@ -1016,8 +1027,8 @@
               this.calculateCategories();
             }
             this.tokensSearchResults = this.calculateSearchResults();
-            this.collatedOwners = this.calculateCollatedOwners();
-            console.log(new Date().toUTCString() + " recalculate(from: " + from + ") processOSData() begin");
+            // this.collatedOwners = this.calculateCollatedOwners();
+            // console.log(new Date().toUTCString() + " recalculate(from: " + from + ") processOSData() begin");
             // await this.processOSData();
             // this.saveSettings();
             console.log(new Date().toUTCString() + " recalculate(from: " + from + ") processOSData() completed");
@@ -1041,29 +1052,53 @@
           },
 
           calculateCategories() {
-            if (Object.keys(this.categories).length == 0) {
+            if (Object.keys(this.categoryOptions).length == 0) {
               const collator = {};
-              for (let i in this.data) {
-                const item = this.data[i];
-                for (let k in item.attributes) {
-                  const attribute = item.attributes[k];
+              for (let item of this.data) {
+                for (let attribute of item.attributes) {
+                  // const attribute = item.attributes[k];
                   const traitType = attribute.trait_type;
-                  const value = attribute.value;
-                  if (!collator[traitType]) {
-                    collator[traitType] = {};
-                  }
-                  if (!collator[traitType][value]) {
-                    collator[traitType][value] = 1;
-                  } else {
-                    collator[traitType][value] = collator[traitType][value] + 1;
+                  if (traitType != 'DOM COLOR NAME' && traitType != 'DOM COLOR HEX' && traitType != 'DANCE MOVES (ms)') {
+                    const value = attribute.value;
+                    if (!collator[traitType]) {
+                      collator[traitType] = {};
+                    }
+                    if (!collator[traitType][value]) {
+                      collator[traitType][value] = 1;
+                    } else {
+                      collator[traitType][value] = collator[traitType][value] + 1;
+                    }
                   }
                 }
               }
+              const categoryKeys = Object.keys(collator).sort();
+              const categoryOptions = {};
+              for (const categoryKey of categoryKeys) {
+                // console.log("--- " + categoryKey + " ---");
+                // console.log(collator[categoryKey]);
+                const options = [];
+                for (const [categoryOption, categoryTotal] of Object.entries(collator[categoryKey])) {
+                  // console.log(categoryOption + " " + categoryTotal);
+                  options.push({ categoryOption: categoryOption, categoryTotal: categoryTotal })
+                }
+                options.sort(function(a, b) {
+                  return b.categoryTotal - a.categoryTotal;
+                });
+                categoryOptions[categoryKey] = options;
+              }
+
+              // this.categories = collator;
+              this.categoryOptions = categoryOptions;
+              // console.log(JSON.stringify(categoryOptions, null, 2));
+              // this.categoryKeys = categoryKeys;
               console.log(new Date().toUTCString() + " - calculateCategories() completed");
-              this.categories = collator;
             }
           },
 
+          calculateSearchResultsNEW() {
+            // let data = this.data.slice(0);
+            return this.data;
+          },
           calculateSearchResults() {
             const accountLowerCase = this.account == null ? null : this.account.toLowerCase();
             const selectedTags = this.selectedTags == null || (this.selectedTags.length == 1 && this.selectedTags[0] == null) ? null : this.selectedTags;
@@ -1497,20 +1532,20 @@
             } else {
               Vue.set(this.categoryFilter[category], option, true);
             }
-            this.categoryFilter = this.categoryFilter;
+            // this.categoryFilter = this.categoryFilter;
             this.recalculate('filterChange');
           },
-          getSortedValuesForCategory(category) {
-            const results = [];
-            for (let categoryKey in this.categories[category]) {
-              const c = this.categories[category][categoryKey];
-              results.push({ categoryOption: categoryKey, categoryTotal: c })
-            }
-            results.sort(function(a, b) {
-              return b.categoryTotal - a.categoryTotal;
-            });
-            return results;
-          },
+          // getSortedValuesForCategory(category) {
+          //   const results = [];
+          //   for (let categoryKey in this.categories[category]) {
+          //     const c = this.categories[category][categoryKey];
+          //     results.push({ categoryOption: categoryKey, categoryTotal: c })
+          //   }
+          //   results.sort(function(a, b) {
+          //     return b.categoryTotal - a.categoryTotal;
+          //   });
+          //   return results;
+          // },
 
           // --- Utilities ---
           getURL(s) {
