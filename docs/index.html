@@ -64,11 +64,11 @@
             <b-navbar-brand to="./" variant="primary" v-b-popover.hover.bottom="'GlicPixxxSurfer'">
               GlicPixxxSurfer
             </b-navbar-brand>
-            <!-- <div v-for="item in getHeaderBastards">
+            <div v-for="item in getHeaderBastards">
               <b-link @click="displayToken(item)">
-                <b-avatar rounded="sm" variant="light" size="3.0rem" :src="data[item] ? data[item].images[0] : null" v-b-popover.hover.bottom="'#' + item" class="ml-2"></b-avatar>
+                <b-avatar rounded="sm" variant="light" size="3.0rem" :src="data[item] ? data[item].image.replace('https://gateway.pinata.cloud/', 'https://ipfs.io/') : null" v-b-popover.hover.bottom="'#' + item" class="ml-2"></b-avatar>
               </b-link>
-            </div> -->
+            </div>
             <b-navbar-nav class="ml-auto">
               <b-button size="sm" variant="outline-primary" class="ml-4" v-b-popover.hover="'CONNECT TO SEE YOUR BASTARDS'" @click="connect();" v-if="!connected">CONNECT WALLET</b-button>
               <b-button size="sm" variant="outline-primary" class="ml-4" v-b-popover.hover="'DISCONNECT TO SEE BOKKY\'S BASTARDS'" @click="disconnect();" v-if="connected">{{ ensOrShortName(account) }}</b-button>
@@ -187,6 +187,7 @@
                             <b-card-text>
                               <b-form-input type="text" size="sm" @change="recalculate('searchTokenId')" v-model.trim="settings.searchTokenId" debounce="600" placeholder="🔍 ID1, ID2-ID3, ..." class="mb-2"></b-form-input>
                               <b-form-input type="text" size="sm" @change="recalculate('searchAccount')" v-model.trim="settings.searchAccount" debounce="600" placeholder="🔍 ENS1, ADDY2, ..." class="mb-2"></b-form-input>
+                              <b-form-select size="sm" @change="recalculate('mintedOption')" v-model="settings.mintedOption" :options="mintedOptions"></b-form-select>
                               <!-- <b-form-input type="text" size="sm" @change="recalculate('searchLyrics')" v-model.trim="settings.searchLyrics" debounce="600" placeholder="🔍 LYRICS" class="mb-2"></b-form-input> -->
                               <!-- <b-form-checkbox @change="recalculate('searchForSaleOnly')" v-model.trim="settings.searchForSaleOnly" debounce="600">For Sale Only (coming)</b-form-checkbox> -->
                             </b-card-text>
@@ -224,7 +225,8 @@
                           <b-link @click="displayToken(record.tokenId)" v-b-popover.hover="'CLICK FOR DETAILS'">
                             <b-img-lazy :width="cardImageSizeCurrent + '%'" :src="record.image.replace('https://gateway.pinata.cloud/', 'https://ipfs.io/')" />
                           </b-link>
-                          <!-- <b-card-text>
+                          <b-card-text>
+                            <!--
                             <b-form-checkbox @input="saveSettings('cardViewSelection')" inline v-model="settings.selection[record.tokenId]">
                             -->
                               <b-link :href="'https://www.bastardganpunks.club/v2/' + record.tokenId" v-b-popover.hover="'VIEW NFT IN ORIGNIAL WEBSHITE'" target="_blank">
@@ -234,7 +236,7 @@
                             </b-form-checkbox>
                           -->
                             <b-link v-if="cardImageSizeCurrent >= 300" :href="'https://opensea.io/accounts/' + owners[record.tokenId]" v-b-popover.hover="'VIEW OWNER ACCOUNT IN OPENSEA'" target="_blank">
-                              {{ ensOrShortName(owners[record.tokenId], 14) }}
+                              {{ ensOrShortName(owners[record.tokenId], 16) }}
                             </b-link>
                             <!--
                             <b-link v-if="cardImageSizeCurrent >= 300" size="sm" @click="settings.searchAccount = owners[record.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" variant="link">
@@ -261,8 +263,8 @@
                               <font size="-2">
                                 <b-form-tags size="sm" @input="saveTags" v-model="tags[record.tokenId]" tag-variant="primary" tag-pills separator=" " v-b-popover.hover="'ENTER NEW TAGS'" placeholder="" class="ml-0 mt-1 mw-100"></b-form-tags>
                               </font>
-                            </span>
-                          </b-card-text> -->
+                            </span> -->
+                          </b-card-text>
                         </b-card>
                       </div>
                     </b-card-group>
@@ -271,7 +273,7 @@
                   <div v-if="!settings.cardView">
                     <b-table small :fields="fields" :items="pagedTokensResults" responsive="sm">
                       <template #cell(image)="data">
-                        <b-link @click="displayToken(data.item.tokenId)" v-b-popover.hover="'Click for details'">
+                        <b-link :download="'glicpixxxver002_' + data.item.tokenId" @click="displayToken(data.item.tokenId)" v-b-popover.hover="'Click for details'">
                           <b-img-lazy width="300%" :src="data.item.image.replace('https://gateway.pinata.cloud/', 'https://ipfs.io/')" />
                         </b-link>
                       </template>
@@ -761,6 +763,7 @@
             searchForSaleOnly: false,
             selection: {},
             sortOption: 'tokenIdAscending',
+            mintedOption: null,
             display: {
               owner: true,
               // record.images = [osData.image_url, record.image, record.imageArweave, osData.image_preview_url, osData.image_thumbnail_url];
@@ -779,6 +782,11 @@
           ownersCurrentPage: 1,
           ownersPageSize: 10,
 
+          mintedOptions: [
+            { value: null, text: 'Both Minted and Unminted' },
+            { value: 'm', text: 'Minted only' },
+            { value: 'u', text: 'Unminted only' },
+          ],
           pageSizes: [
             { value: 10, text: '10/P' },
             { value: 100, text: '100/P' },
@@ -787,6 +795,7 @@
             { value: 2145, text: '2,145/P' },
             { value: 66666, text: 'ALL' },
           ],
+
 
           selectedTokenId: null,
           selectedItemFrame: 0,
@@ -848,7 +857,7 @@
             { value: 'tokenIdDescending', text: 'TOKENID DESCENDING' },
             { value: 'random', text: 'RANDOM' },
           ],
-          bokkysBastards: [471, 1133, 1147, 1197, 1322, 1406, 1822, 1835, 2289, 2893, 3053, 3291, 3316, 3569, 3852, 3905, 3906, 4046, 4087, 4113, 4158, 4209, 4272, 4618, 4777, 4793, 4994, 5288, 5601, 5654, 5710, 5775, 5903, 6225, 6285, 6626, 6632, 7008, 7214, 7222, 7266, 7432, 7492, 7567, 7721, 7731, 7776, 7831, 7850, 8621, 8645, 8854, 8895, 9040, 9158, 9260, 9362, 9374, 9401, 9490, 9594, 9595, 9740, 9759, 9783, 9792, 9881, 10050, 10093, 10178, 10192, 10193, 10252, 10341, 10375, 10449, 10456, 10564, 10583, 10592, 10661, 10724, 10727, 10729, 10734, 10735, 10736, 10737, 10834, 11100, 11105, 11140, 11258],
+          bokkysBastards: [11, 51, 169, 349, 365, 371, 406, 427, 433, 882, 1133, 1544, 1558, 1608, 1733, 1817, 2246, 2700, 3304, 3464],
         },
 
 
@@ -876,7 +885,7 @@
             return this.collatedOwners.slice((this.ownersCurrentPage - 1) * this.ownersPageSize, this.ownersCurrentPage * this.ownersPageSize);
           },
           getHeaderBastards() {
-            const MAXBASTARDSTODISPLAY = 14;
+            const MAXBASTARDSTODISPLAY = 16;
             let tokenIdsOwned = this.tokensOwned.slice(0);
             if (tokenIdsOwned.length == 0) {
               tokenIdsOwned = this.bokkysBastards.slice(0);
@@ -1029,7 +1038,7 @@
             // this.collatedOwners = this.calculateCollatedOwners();
             // console.log(new Date().toUTCString() + " recalculate(from: " + from + ") processOSData() begin");
             // await this.processOSData();
-            // this.saveSettings();
+            this.saveSettings();
             console.log(new Date().toUTCString() + " recalculate(from: " + from + ") processOSData() completed");
           },
 
@@ -1038,9 +1047,8 @@
             // TODO
             // if (this.owners.length > 0 && this.account) {
             //   const account = this.account.toLowerCase();
-            //   for (let i in ALLDATA) {
-            //     const item = ALLDATA[i];
-            //     const owner = this.owners[i];
+            //   for (let item of this.data) {
+            //     const owner = this.owners[item.tokenId];
             //     if (owner && owner.toLowerCase() == account) {
             //       results.push(item.tokenId);
             //     }
@@ -1073,11 +1081,8 @@
               const categoryKeys = Object.keys(collator).sort();
               const categoryOptions = {};
               for (const categoryKey of categoryKeys) {
-                // console.log("--- " + categoryKey + " ---");
-                // console.log(collator[categoryKey]);
                 const options = [];
                 for (const [categoryOption, categoryTotal] of Object.entries(collator[categoryKey])) {
-                  // console.log(categoryOption + " " + categoryTotal);
                   options.push({ categoryOption: categoryOption, categoryTotal: categoryTotal })
                 }
                 options.sort(function(a, b) {
@@ -1085,34 +1090,24 @@
                 });
                 categoryOptions[categoryKey] = options;
               }
-
-              // this.categories = collator;
               this.categoryOptions = categoryOptions;
-              // console.log(JSON.stringify(categoryOptions, null, 2));
-              // this.categoryKeys = categoryKeys;
               console.log(new Date().toUTCString() + " - calculateCategories() completed");
             }
-          },
-
-          calculateSearchResultsNEW() {
-            // let data = this.data.slice(0);
-            return this.data;
           },
           calculateSearchResults() {
             const accountLowerCase = this.account == null ? null : this.account.toLowerCase();
             const selectedTags = this.selectedTags == null || (this.selectedTags.length == 1 && this.selectedTags[0] == null) ? null : this.selectedTags;
 
             function getAttribute(data1, category) {
-              for (let attributeIndex in data1.attributes) {
-                const attribute = data1.attributes[attributeIndex];
+              for (let attribute of data1.attributes) {
                 if (attribute.trait_type == category) {
                   return attribute.value;
                 }
               }
               return null;
             }
-
-            console.log("this.tokensOwned: " + JSON.stringify(this.tokensOwned));
+            //
+            // console.log("this.tokensOwned: " + JSON.stringify(this.tokensOwned));
             let data = this.data.slice(0);
             let stage1Data = data;
             if (this.settings.searchTokenId != null && this.settings.searchTokenId.length > 0) {
@@ -1143,6 +1138,27 @@
             }
 
             let stage3Data = stage2Data;
+            if (this.settings.mintedOption) {
+              const account = this.account.toLowerCase();
+              stage3Data = [];
+              if (this.settings.mintedOption == 'm') {
+                for (let d of stage2Data) {
+                  const owner = this.owners[d.tokenId];
+                  if (owner) {
+                    stage3Data.push(d);
+                  }
+                }
+              } else {
+                for (let d of stage2Data) {
+                  const owner = this.owners[d.tokenId];
+                  if (!owner) {
+                    stage3Data.push(d);
+                  }
+                }
+              }
+            }
+
+            let stage4Data = stage3Data;
             if (this.selectedCategories && this.selectedCategories.length > 0 && this.selectedCategories[0] != null) {
               const tokenIds = {};
               for (const selectedCategory of this.selectedCategories) {
@@ -1155,19 +1171,19 @@
                   }
                 }
               }
-              stage3Data = [];
-              for (let d of stage2Data) {
+              stage4Data = [];
+              for (let d of stage3Data) {
                 if (tokenIds[d.tokenId]) {
-                  stage3Data.push(d);
+                  stage4Data.push(d);
                 }
               }
             }
 
-            let stage4Data = stage3Data;
+            let stage5Data = stage4Data;
             if (this.settings.searchLyrics != null && this.settings.searchLyrics.length > 0) {
               const s = this.settings.searchLyrics.toLowerCase();
               console.log("s: " + s);
-              stage4Data = [];
+              stage5Data = [];
               for (let i in stage1Data) {
                 const d = stage1Data[i];
                 const include = d.description.toLowerCase().includes(s);
@@ -1175,36 +1191,36 @@
                   if (i < 10) {
                     console.log("stage1Data[" + i + "].description: " + JSON.stringify(d.description) + ", include: " + include);
                   }
-                  stage4Data.push(d);
+                  stage5Data.push(d);
                 }
               }
             }
 
-            let stage5Data = stage4Data;
+            let stage6Data = stage5Data;
             if (this.settings.searchAccount != null && this.settings.searchAccount.length > 0) {
               const searchAccounts = this.settings.searchAccount.split(",");
-              stage5Data = [];
-              for (let i in stage4Data) {
-                const d = stage4Data[i];
+              stage6Data = [];
+              for (let i in stage5Data) {
+                const d = stage5Data[i];
                 const owner = this.owners[d.tokenId] ? this.owners[d.tokenId].toLowerCase() : null;
                 const ensName = owner == null ? null : this.ensMap[owner];
                 for (searchAccount of searchAccounts) {
                   const s = searchAccount.toLowerCase();
                   if (owner != null && owner.includes(s)) {
-                    stage5Data.push(d);
+                    stage6Data.push(d);
                     break;
                   } else if (ensName != null && ensName.includes(s)) {
-                    stage5Data.push(d);
+                    stage6Data.push(d);
                     break;
                   }
                 }
               }
             }
-            console.log("stage5Data.length: " + stage5Data.length);
+            console.log("stage6Data.length: " + stage6Data.length);
 
             let results = [];
-            for (let i in stage5Data) {
-              const d = stage5Data[i];
+            for (let i in stage6Data) {
+              const d = stage6Data[i];
               let include = true;
               for (const [key, value] of Object.entries(this.categoryFilter)) {
                 const attributeValue = getAttribute(d, key);
@@ -1654,7 +1670,7 @@
           }
           if (localStorage.getItem('gpsSettings')) {
             const savedSettings = JSON.parse(localStorage.getItem('gpsSettings'));
-            if (savedSettings.sortOption != null) {
+            if ('mintedOption' in savedSettings) {
               this.settings = savedSettings;
             }
           }
