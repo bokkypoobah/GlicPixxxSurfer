@@ -1,4 +1,19 @@
 # GlicPixxxSurfer
+
+See https://bokkypoobah.github.io/GlicPixxxSurfer/ .
+
+The code is mostly in [docs/index.html](docs/index.html).
+
+Notes:
+
+* Uses the data from https://api.glicpixxx.love/ver002/all , stored in [docs/all.js](docs/all.js).
+
+<br />
+
+<br />
+
+---
+
 GLICPIXXXVER002 Surfer
 
 https://etherscan.io/address/0x1c60841b70821dca733c9b1a26dbe1a33338bd43#readContract
