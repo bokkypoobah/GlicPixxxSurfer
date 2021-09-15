@@ -295,6 +295,11 @@
                             <!-- <font size="-2">{{ owners[data.item.tokenId] }}</font> -->
                           </b-link>
                         </span>
+                        <span v-else>
+                          <b-link :href="'https://opensea.io/assets/0x1c60841b70821dca733c9b1a26dbe1a33338bd43/' + data.item.tokenId" v-b-popover.hover="'VIEW NFT IN OS'" target="_blank">
+                            {{ '#' + data.item.tokenId }}
+                          </b-link>
+                        </span>
                         <!--
                         <b-link size="sm" @click="settings.searchAccount = owners[data.item.tokenId]; tabIndex = 0; recalculate('tokenSearch'); " v-b-popover.hover="'FILTER BY OWNER ACCOUNT'" variant="link">
                           <b-icon-search shift-v="+1" font-scale="0.8"></b-icon-search>
