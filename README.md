@@ -9,6 +9,7 @@ Notes:
 * Uses the data from https://api.glicpixxx.love/ver002/all , stored in [docs/all.js](docs/all.js).
 * Retrieves the ERC-721 ownership data in bulk using ERC721Helper deployed to [0x12B7458c90616c68fCC37C74609313fD105771F8](https://etherscan.io/address/0x12B7458c90616c68fCC37C74609313fD105771F8#code).
 * Retrieves the ENS reverse records for all owner addresses.
+* Trait types 'DOM COLOR NAME', 'DOM COLOR HEX' and 'DANCE MOVES (ms)') have been excluded from the filters due to excessive computational usage for 1 of 1 traits
 
 <br />
 
