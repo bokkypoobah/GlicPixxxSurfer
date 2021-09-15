@@ -496,7 +496,6 @@
                 </b-card-text>
               </b-tab> -->
 
-              <!--
               <b-tab title="SYNC DATA">
                 <b-card-text>
                   <b-button size="sm" @click="loadOSData()" variant="outline-primary">
@@ -504,10 +503,9 @@
                   </b-button>
                 </b-card-text>
                 <b-card-text>
-                   TAKES ~ 6 MINUTES. YOU CAN CONTINUE BROWSING THE BEAUTIFUL BASTARDS WHILE THIS PROCESS RUNS IN THE BACKGROUND.
+                   CONNECT (TOP RIGHT) TO RETRIEVE THE ERC-721 OWNERSHIP INFO FIRST. TAKES ~ 6 MINUTES. YOU CAN CONTINUE BROWSING THE BEAUTIFUL BASTARDS WHILE THIS PROCESS RUNS IN THE BACKGROUND.
                 </b-card-text>
               </b-tab>
-              -->
 
               <!--
               <b-tab lazy title="OWNERS">
@@ -1031,7 +1029,7 @@
             this.tokensSearchResults = this.calculateSearchResults();
             // this.collatedOwners = this.calculateCollatedOwners();
             // console.log(new Date().toUTCString() + " recalculate(from: " + from + ") processOSData() begin");
-            // await this.processOSData();
+            await this.processOSData();
             this.saveSettings();
             console.log(new Date().toUTCString() + " recalculate(from: " + from + ") processOSData() completed");
           },
@@ -1278,17 +1276,17 @@
 
           async processOSData() {
             console.log(new Date().toUTCString() + " processOSData() start");
-            // var db0 = new Dexie("BastardDB");
-            // db0.version(1).stores({
-            //   apiData: '&tokenId,asset,timestamp'
-            // });
-            // const osAssets = await db0.apiData.toArray();
-            // const osData = {};
-            // // console.log(JSON.stringify(osAssets[4553], null, 2));
-            // for (const asset of osAssets) {
-            //   if (asset.tokenId == 1712345) {
-            //     console.log(JSON.stringify(asset, null, 2));
-            //   }
+            var db0 = new Dexie("GlicPixxxVer002DB");
+            db0.version(1).stores({
+              apiData: '&tokenId,asset,timestamp'
+            });
+            const osAssets = await db0.apiData.toArray();
+            const osData = {};
+            // console.log(JSON.stringify(osAssets[1234], null, 2));
+            for (const asset of osAssets) {
+              if (asset.tokenId == 28) {
+                console.log(JSON.stringify(asset, null, 2));
+              }
             //   let lastSale = null;
             //   if (asset.asset.last_sale) {
             //     lastSale = {
@@ -1330,7 +1328,7 @@
             //     }
             //   }
             //   osData[asset.tokenId] = { sellOrder: sellOrder, lastSale: lastSale };
-            // }
+            }
             // // console.log(JSON.stringify(osData, null, 8));
             // this.osData = osData;
             console.log(new Date().toUTCString() + " processOSData() completed");
@@ -1452,7 +1450,7 @@
           // --- OS Data Retrieval ---
           async loadOSData() {
             console.log(new Date().toUTCString() + " loadOSData() start");
-            var db0 = new Dexie("BastardDB");
+            var db0 = new Dexie("GlicPixxxVer002DB");
             db0.version(1).stores({
               apiData: '&tokenId,asset,timestamp'
             });
@@ -1463,14 +1461,17 @@
             const records = [];
             const delay = ms => new Promise(res => setTimeout(res, ms));
             await delay(DELAYINMILLIS);
-            const to = this.getTotalSupply;
+            const tokenIds = Object.keys(this.owners);
+            // console.log(JSON.stringify(tokenIds, null, 2));
+            const to = tokenIds.length;
             for (let i = 0; i < to; i += BATCHSIZE) {
-              let url = "https://api.opensea.io/api/v1/assets?asset_contract_address=" + BASTARDADDRESS + "\&order_direction=desc\&limit=50\&offset=0";
+              let url = "https://api.opensea.io/api/v1/assets?asset_contract_address=" + GLICPIXXXVER002ADDRESS + "\&order_direction=desc\&limit=50\&offset=0";
               for (let j = i; j < i + BATCHSIZE && j < to; j++) {
-                url = url + "&token_ids=" + j;
+                url = url + "&token_ids=" + tokenIds[j];
               }
               const elapsed = parseInt(new Date() / 1000) - timestamp;
-              this.processing = "DOWNLOADING LIVE DATA FROM OPENSEA: " + ethers.utils.commify(i) + " (BATCH SIZE " + BATCHSIZE + ") OF " + ethers.utils.commify(this.getTotalSupply) + ". ELAPSED " + elapsed + " SECONDS. CONTINUE BROWSING THE BEAUTIFUL BASTRADS IN THE MEANTIME";
+              this.processing = "DOWNLOADING LIVE DATA FROM OPENSEA: " + ethers.utils.commify(i) + " (BATCH SIZE " + BATCHSIZE + ") OF " + ethers.utils.commify(tokenIds.length) + ". ELAPSED " + elapsed + " SECONDS. CONTINUE BROWSING THE BEAUTIFUL BASTRADS IN THE MEANTIME";
+              console.log(url);
               const data = await fetch(url).then(response => response.json());
               if (data.assets && data.assets.length > 0) {
                 for (let assetIndex = 0; assetIndex < data.assets.length; assetIndex++) {
