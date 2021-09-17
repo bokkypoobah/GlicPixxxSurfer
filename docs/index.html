@@ -766,9 +766,11 @@
           ownersPageSize: 10,
 
           mintedOptions: [
-            { value: null, text: 'Both Minted and Unminted' },
-            { value: 'm', text: 'Minted only' },
-            { value: 'u', text: 'Unminted only' },
+            { value: null, text: 'Both Minted And Unminted' },
+            { value: 'm', text: 'All Minted' },
+            { value: 's', text: 'Minted And For Sale' },
+            // { value: 'o', text: 'Minted And Has Offers' },
+            { value: 'u', text: 'Unminted Only' },
           ],
           pageSizes: [
             { value: 10, text: '10/P' },
@@ -1120,6 +1122,13 @@
               }
             }
 
+            // { value: null, text: 'Both Minted And Unminted' },
+            // { value: 'm', text: 'All Minted' },
+            // { value: 's', text: 'Minted And For Sale' },
+            // { value: 'o', text: 'Minted And Has Offers' },
+            // { value: 'u', text: 'Unminted Only' },
+
+
             let stage3Data = stage2Data;
             if (this.settings.mintedOption) {
               const account = this.account.toLowerCase();
@@ -1128,6 +1137,27 @@
                 for (let d of stage2Data) {
                   const owner = this.owners[d.tokenId];
                   if (owner) {
+                    stage3Data.push(d);
+                  }
+                }
+              } else if (this.settings.mintedOption == 's') {
+                // osData[asset.tokenId] = { sellOrder: sellOrder, lastSale: lastSale };
+                for (let d of stage2Data) {
+                  const owner = this.owners[d.tokenId];
+                  const osData = this.osData[d.tokenId];
+                  // console.log(owner + " " + JSON.stringify(d, null, 2));
+                  if (owner && osData.sellOrder) {
+                    stage3Data.push(d);
+                  }
+                }
+              } else if (this.settings.mintedOption == 'o') {
+                // TODO: add offers to osData
+                // osData[asset.tokenId] = { sellOrder: sellOrder, lastSale: lastSale };
+                for (let d of stage2Data) {
+                  const owner = this.owners[d.tokenId];
+                  const osData = this.osData[d.tokenId];
+                  // console.log(owner + " " + JSON.stringify(d, null, 2));
+                  if (owner && osData.lastSale) {
                     stage3Data.push(d);
                   }
                 }
