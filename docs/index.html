@@ -1666,7 +1666,7 @@
           }
           if (localStorage.getItem('gpsSettings')) {
             const savedSettings = JSON.parse(localStorage.getItem('gpsSettings'));
-            if ('filenamePrefix' in savedSettings) {
+            if ('mintedOption' in savedSettings) {
               this.settings = savedSettings;
             }
           }
