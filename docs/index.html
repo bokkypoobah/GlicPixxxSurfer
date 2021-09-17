@@ -83,10 +83,12 @@
               <b-modal ref="gif-frame-extraction-modal" hide-footer @shown="onGIFFrameSelectionModalOpened" dialog-class="mw-100 w-50">
                 <template #modal-title>
                   {{ selected.tokenId == null ? null : data[selected.tokenId].name }}
+                  <span v-if="selected.resolution"> - Resolution {{ selected.resolution }}</span>
                   <span v-if="selected.isGIF"> - Frame {{ selected.frame == null ? '(loading)' : selected.frame }}</span>
+                  <span v-if="selected.filename"> - Filename {{ selected.filename }}</span>
                 </template>
                 <div class="d-block text-center">
-                  <img id="thegif1" :src="selected.tokenId != null && data[selected.tokenId] ? (ipfsPrefix + data[selected.tokenId].image) : null" :rel:animated_src="selected.tokenId && data[selected.tokenId] ? ipfsPrefix + data[selected.tokenId].image : null" width="600" height="600" rel:auto_play="0" rel:rubbable="1" class="pr-3" />
+                  <img id="thegif1" :src="selected.tokenId != null && data[selected.tokenId] ? (ipfsPrefix + selected.filename) : null" :rel:animated_src="selected.tokenId && data[selected.tokenId] ? ipfsPrefix + selected.filename : null" width="600" height="600" rel:auto_play="0" rel:rubbable="1" class="pr-3" />
                 </div>
                 <b-input-group v-if="selected.isGIF">
                   <template #prepend>
@@ -273,7 +275,7 @@
                   <div v-if="!settings.cardView">
                     <b-table small :fields="fields" :items="pagedTokensResults" responsive="sm">
                       <template #cell(image)="data">
-                        <b-link :download="filenamePrefix + data.item.tokenId + '_' + data.item.image" @click="displayToken(data.item.tokenId)" v-b-popover.hover="'Click for details'">
+                        <b-link :download="filenamePrefix + data.item.tokenId + '_' + data.item.image" @click="displayToken(data.item.tokenId, null, data.item.image)" v-b-popover.hover="'Click for view the default image'">
                           <b-img-lazy width="300%" :src="ipfsPrefix + data.item.image" />
                         </b-link>
                       </template>
@@ -389,7 +391,11 @@
                           <b-col cols="3" class="m-0 p-0"><font size="-3">Image IPFS</font></b-col>
                           <b-col class="m-0 p-0">
                             <b-row v-for="(v, k) in data.item.image_ipfs"  v-bind:key="k" class="m-0 p-0">
-                              <b-col cols="2" class="m-0 p-0"><font size="-3">{{ k }}</font></b-col>
+                              <b-col cols="2" class="m-0 p-0">
+                                <b-link :download="filenamePrefix + data.item.tokenId + '_' + data.item.image" @click="displayToken(data.item.tokenId, k, v)" v-b-popover.hover="'Click for view ' + k + 'x' + k + ' image'">
+                                  <font size="-3">{{ k }}</font>
+                                </b-link>
+                              </b-col>
                               <b-col class="m-0 p-0">
                                 <b-link :href="ipfsPrefix + v" v-b-popover.hover="'VIEW IMAGE'" target="_blank">
                                   <b><font size="-2">{{ v }}</font></b>
@@ -1496,8 +1502,9 @@
 
           // --- GIF Frame Extraction ---
           async displayToken(tokenId, resolution, filename) {
+            console.log("displayToken(tokenId: " + tokenId + ", resolution: " + resolution + ", filename: " + filename + ")");
             const xhr = new XMLHttpRequest();
-            xhr.open('GET', this.ipfsPrefix + this.data[tokenId].image);
+            xhr.open('GET', this.ipfsPrefix + filename);
             const t = this;
             xhr.onload = function() {
               if (xhr.response.substring(0, 3) == "GIF") {
@@ -1506,6 +1513,8 @@
                 t.selected.isGIF = false;
               }
               t.selected.tokenId = tokenId;
+              t.selected.resolution = resolution;
+              t.selected.filename = filename;
               t.$refs['gif-frame-extraction-modal'].show();
             }
             xhr.onerror = function() {
