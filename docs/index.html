@@ -769,7 +769,6 @@
             { value: null, text: 'Minted And Unminted' },
             { value: 'm', text: 'Minted Only' },
             { value: 's', text: 'Minted Only, For Sale' },
-            // { value: 'o', text: 'Minted And Has Offers' },
             { value: 'u', text: 'Unminted Only' },
           ],
           pageSizes: [
@@ -1122,13 +1121,6 @@
               }
             }
 
-            // { value: null, text: 'Both Minted And Unminted' },
-            // { value: 'm', text: 'All Minted' },
-            // { value: 's', text: 'Minted And For Sale' },
-            // { value: 'o', text: 'Minted And Has Offers' },
-            // { value: 'u', text: 'Unminted Only' },
-
-
             let stage3Data = stage2Data;
             if (this.settings.mintedOption) {
               const account = this.account.toLowerCase();
@@ -1141,23 +1133,11 @@
                   }
                 }
               } else if (this.settings.mintedOption == 's') {
-                // osData[asset.tokenId] = { sellOrder: sellOrder, lastSale: lastSale };
                 for (let d of stage2Data) {
                   const owner = this.owners[d.tokenId];
                   const osData = this.osData[d.tokenId];
                   // console.log(owner + " " + JSON.stringify(d, null, 2));
                   if (owner && osData.sellOrder) {
-                    stage3Data.push(d);
-                  }
-                }
-              } else if (this.settings.mintedOption == 'o') {
-                // TODO: add offers to osData
-                // osData[asset.tokenId] = { sellOrder: sellOrder, lastSale: lastSale };
-                for (let d of stage2Data) {
-                  const owner = this.owners[d.tokenId];
-                  const osData = this.osData[d.tokenId];
-                  // console.log(owner + " " + JSON.stringify(d, null, 2));
-                  if (owner && osData.lastSale) {
                     stage3Data.push(d);
                   }
                 }
@@ -1229,7 +1209,7 @@
                 }
               }
             }
-            console.log("stage6Data.length: " + stage6Data.length);
+            console.log("stage6Data[2083]: " + JSON.stringify(stage6Data[2083], null, 2));
 
             let results = [];
             for (let i in stage6Data) {
@@ -1305,7 +1285,7 @@
             const osData = {};
             // console.log(JSON.stringify(osAssets[1234], null, 2));
             for (const asset of osAssets) {
-              if (asset.tokenId == 28) {
+              if (asset.tokenId == 2083) {
                 console.log(JSON.stringify(asset, null, 2));
               }
               let lastSale = null;
