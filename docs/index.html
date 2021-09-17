@@ -103,7 +103,7 @@
 
             <template>
               <div>
-                <b-sidebar lazy right id="sidebar-border" sidebar-class="border-right border-danger">
+                <b-sidebar right id="sidebar-border" sidebar-class="border-right border-danger">
                   <!-- <div v-for="(categoryKey, categoryIndex) in Object.keys(categories).sort()" v-bind:key="categoryIndex"> -->
                   <div v-for="(categoryOption, categoryKey) in categoryOptions" v-bind:key="categoryKey">
                     <b-card body-class="p-0" header-class="m-0 p-0 pl-2" footer-class="p-1" class="m-3 p-0">
@@ -327,6 +327,7 @@
                         <b-form-textarea size="sm" @change="metadataDirtyFlag[data.item.tokenId] = true;" :disabled="owners[data.item.tokenId].toLowerCase() != account.toLowerCase()" v-model.trim="metadatas[data.item.tokenId]" placeholder="NO METADATA ..." rows="3" max-rows="10" class="ml-0 mt-1 mb-1"></b-form-textarea>
                         <b-form-textarea size="sm" @change="saveNotes('listView')" v-model.trim="notes[data.item.tokenId]" placeholder="NOTES ..." rows="3" max-rows="10" class="ml-0 mt-1 mb-1"></b-form-textarea>
                         <b-form-tags size="sm" @input="saveTags" v-model="tags[data.item.tokenId]" tag-variant="primary" tag-pills size="sm" separator=" " v-b-popover.hover="'ENTER NEW TAGS'" placeholder="TAGS ..." class="ml-0 mt-1 mb-1"></b-form-tags>
+                        -->
                         <div v-if="osData[data.item.tokenId] && osData[data.item.tokenId].sellOrder">
                           <b-button size="sm" variant="warning" :href="data.item.permalink" v-b-popover.hover="'PURCHASE IN OPENSEA'" target="_blank" class="m-1 p-1">
                             <b-badge size="sm" variant="light">{{ formatETH(osData[data.item.tokenId].sellOrder.currentPrice) }}</b-badge>
@@ -338,13 +339,13 @@
                             <b-badge size="sm" variant="light">{{ formatETH(osData[data.item.tokenId].lastSale.totalPrice) }}</b-badge>
                             {{ osData[data.item.tokenId].lastSale.symbol }} <font size="-2">{{ formatDate(osData[data.item.tokenId].lastSale.eventTimestamp) }}</font>
                           </b-button>
-                        </div> -->
+                        </div>
                       </template>
-                      <template #cell(description)="data">
-                        <!-- <span v-for="line in data.item.description.split('\n')">
+                      <!-- <template #cell(description)="data">
+                        <span v-for="line in data.item.description.split('\n')">
                           <b>{{ line }}</b><br />
-                        </span> -->
-                      </template>
+                        </span>
+                      </template> -->
                       <template #cell(attributes)="data">
                         <b-row v-for="(attribute, i) in data.item.attributes"  v-bind:key="i" class="m-0 p-0">
                           <b-col cols="3" class="m-0 p-0"><font size="-3">{{ attribute.trait_type }}</font></b-col><b-col class="m-0 p-0"><b><font size="-2">{{ attribute.value }}</font></b></b-col>
@@ -635,69 +636,59 @@
               <b-tab title="INFO">
                 <h6 class="mb-1">WHAT IS THIS WEBSHITE ABOUT?</h6>
                 <b-card-text>
-                  A SMOL WEB3 APP TO VIEW YOUR BASTARD GAN PUNKS FROM <a href="https://www.bastardganpunks.club/" target="_blank">https://www.bastardganpunks.club/</a>. OPEN SAUCED CODE IS AVAILBLE FOR YOUR TO IMPROVE ON - SEE BELOW.
+                  A SMOL WEB3 APP TO VIEW YOUR GLICPIXXXVER002 FROM <a href="https://glicpixxx.love/ver002" target="_blank">https://glicpixxx.love/ver002</a>. OPEN SAUCED CODE IS AVAILBLE FOR YOUR TO IMPROVE ON - SEE BELOW.
 
-                  THIS SITE CURRENTLY LISTS BGANPUNKV2 (VERSION 2) NFTS, NOT BGANPUNKV1 (VERSION 1) <a href="https://bganpunks.eth.link/" target="_blank">https://bganpunks.eth.link/</a>.
-
-                  READ MORE ABOUT BGANPUNKS AT <a href="https://mooncat888.medium.com/introduction-to-bastard-gan-punk-v2-nft-art-collection-c5bb0750432c" target="_blank">Introduction to Bastard Gan Punk V2 NFT art collection</a> and <a href="https://everipedia.org/wiki/lang_en/bastard-gan-punks" target="_blank">Bastard Gan Punks</a>.
+                  THIS SITE CURRENTLY LISTS GLICPIXXXVER002 (VERSION 2) NFTS, NOT GLICPIXXXVER001 (VERSION 1) <a href="https://glicpixxx.love/ver001" target="_blank">https://glicpixxx.love/ver001</a>.
                 </b-card-text>
 
                 <b-card-text>
-                  WER ARE NOT AFFILIATED WITH <a href="https://twitter.com/bganpunks" target="_blank">THESE BASTARDS</a> WITH A SANDWICH LOGO. IF YOU HAVE QUESTIONS, HEAD OVER TO THEIR DISCORD, LINEKD FROM THE URLS ABOVE.
+                  WER ARE NOT AFFILIATED WITH <a href="https://glicpixxx.love/" target="_blank">https://glicpixxx.love/</a>, OR FROM THE SAME CREATOR <a href="https://bastardganpunks.club/" target="_blank">https://bastardganpunks.club/</a>. IF YOU HAVE QUESTIONS, HEAD OVER TO THEIR BASTARD GAN PUNK DISCORD, LINEKD FROM THE URLS ABOVE.
                   <b-card no-body img-src="images/Twitter_bganpunks.png" style="max-width: 20rem;" class="mt-1 ml-5"></b-card>
                 </b-card-text>
 
                 <b-card-text>
-                  NFT AND IMAGE COPYRIGHT INFO SEE <a href="https://www.bastardganpunks.club/#nftownership" target="_blank">https://www.bastardganpunks.club/#nftownership</a>.
+                  NFT AND IMAGE COPYRIGHT INFO SEE <a href="https://glicpixxx.love/ver002#nftownership" target="_blank">https://glicpixxx.love/ver002#nftownership</a>.
 
-                  A COPY OF THE <a href="https://drive.google.com/drive/folders/1dLnTSUhDlgfdUlzwm1pamiAWUyGVOGj-" target="_blank">HYPED AF MOSAICS</a> HAS BEEN INCLUDED WITH THIS WEBSHITE TO ORGANISE FOR EASIER ACCESS. ONLY THE HYPED AF (ANIMATED) MOSAICS IN THE FIRST 9,000 (#0 to #8,999) TOKENS HAVE BEEN ORGANISED AND THIS REPOSITORY WILL HAVE TO BE UPDATED WHEN THE ORGANISED MOSAICS ARE FINALLY PUBLISHED.
+                  A COPY OF THE <a href="https://api.glicpixxx.love/ver002/all" target="_blank">https://api.glicpixxx.love/ver002/all</a> HAS BEEN INCLUDED WITH THIS WEBSHITE OF INITIAL DATA.
                 </b-card-text>
 
-                <h6 class="mt-4 mb-1">HOW DO I ADOPT SOME BASTARDS?</h6>
+                <h6 class="mt-4 mb-1">HOW DO I ACQUIRE SOME GLICPIXXXVER002S?</h6>
                 <b-card-text>
-                  THE LAST BASTARD WAS MINTED (SEE BELOW) AT <a href="https://etherscan.io/tx/0x8540f856b6db0eab792fda749730865a10178260da06541c84cf585d8dc60592" target="_blank">Jun-25-2021 04:53:13 PM +UTC</a> THROUGH A PROXY CONTRACT AND THERE ARE NO MORE BASTARDS TO ADOPT.
+                  GLICPIXXXVER002S WERE CLAIMED AND ARE STILL BEING CLAIMED (UNLIMITED CLAIM PERIOD) BY HOLDERS OF BASTARD GAN PUNK V2S (BGANPUNKV2S).
 
-                  BGANPUNKV2 NFTS CAN BE PURCHASED FROM SECONDARY ERC-721 MARKETS SUCH AS <a href="https://opensea.io/collection/bastard-gan-punks-v2" target="_blank">https://opensea.io/collection/bastard-gan-punks-v2</a>.
+                  GLICPIXXXVER002S NFTS CAN BE PURCHASED FROM SECONDARY ERC-721 MARKETS SUCH AS <a href="https://opensea.io/collection/glicpixxxver002" target="_blank">https://opensea.io/collection/glicpixxxver002</a>.
 
-                  SEE ALSO <a href="https://allbastards.com/" target="_blank">https://allbastards.com/</a> and <a href="https://nftexp.io/explore/bastard-gan-punks-v2" target="_blank">https://nftexp.io/explore/bastard-gan-punks-v2</a> FOR MORE INFROMATION.
+                  SEE ALSO <a href="https://allglicpix.com/" target="_blank">https://allglicpix.com/</a> FOR MORE INFROMATION.
 
-                  THIS IS NOT FINANCIAL ADVICE. DO YOUR OWN FUCKING RESEARCH. DISCLOSURE - I HAVE SOME BGANPUNKS.
+                  THIS IS NOT FINANCIAL ADVICE. DO YOUR OWN FUCKING RESEARCH. DISCLOSURE - I HAVE SOME GLICPIXXXS AND BGANPUNKS.
                 </b-card-text>
 
                 <h6 class="mt-4 mb-1">CONTRACT DETAILS</h6>
                 <b-card-text>
-                  THE BGANPUNV2 NFT SMART CONTRACT AT <a href="https://etherscan.io/address/0x31385d3520bCED94f77AaE104b406994D8F2168C#code" target="_blank">0x31385d3520bCED94f77AaE104b406994D8F2168C</a>:
+                  THE GLICPIXXXVER002 NFT SMART CONTRACT AT <a href="https://etherscan.io/address/0x1c60841b70821dca733c9b1a26dbe1a33338bd43#code" target="_blank">0x1c60841b70821dca733c9b1a26dbe1a33338bd43</a>:
                   <ul>
-                    <li>WAS DEPLOYED AT <a href="https://etherscan.io/tx/0xd875fb294bf841eaf7bffae94bd5488d78f227e9b4a3017105bae31b296419ce" target="_blank">Mar-07-2021 12:03:56 PM +UTC</a> WHERE TOKENS #0 TO 33 WERE MINTED</li>
-                    <li>MINTED THE FINAL TOKEN #11,304 AT <a href="https://etherscan.io/tx/0x8540f856b6db0eab792fda749730865a10178260da06541c84cf585d8dc60592" target="_blank">Jun-25-2021 04:53:13 PM +UTC</a> THROUGH A PROXY CONTRACT WITH A DECLINING PRICE</li>
+                    <li>WAS DEPLOYED AT <a href="https://etherscan.io/tx/0xcd295094faa09077f0f501dbd53d1fc950b0970fb00cda5045bbe8d07b8049cc" target="_blank">Sep-12-2021 02:04:46 PM +UTC</a></li>
                   </ul>
-                  <b-card img-src="images/EtherScan_BGANPUNKSV2_20210703_2211.png" style="max-width: 40rem;" class="ml-5">
-                    <b-card-text>
-                      ETHERSCAN'S <a href="https://etherscan.io/token/tokenholderchart/0x31385d3520bced94f77aae104b406994d8f2168c" target="_blank">BASTARD GAN PUNKS V2 TOKEN HOLDERS @ Jul 3 2021</a>
-                    </b-card-text>
-                  </b-card>
                 </b-card-text>
 
                 <h6 class="mt-4 mb-1">ABOUT THIS APP</h6>
                 <b-card-text>
                   <ul>
-                    <li>SOURCE CODE AVAILABLE AT <a href="https://github.com/bokkypoobah/BestBastardGANPunks" target="_blank">https://github.com/bokkypoobah/BestBastardGANPunks</a>. CLONE IT, FORK IT. CONTRIBUTE ANY USEFUL CHANGES BACK TO THIS MAIN REPOSITORY.</li>
-                    <li>THE MAIN BIT OF CODE IS IN <a href="https://github.com/bokkypoobah/BestBastardGANPunks/blob/main/docs/index.html#L416" target="_blank">https://github.com/bokkypoobah/BestBastardGANPunks/blob/main/docs/index.html</a>.</li>
+                    <li>SOURCE CODE AVAILABLE AT <a href="https://github.com/bokkypoobah/GlicPixxxSurfer" target="_blank">https://github.com/bokkypoobah/GlicPixxxSurfer</a>. CLONE IT, FORK IT. CONTRIBUTE ANY USEFUL CHANGES BACK TO THIS MAIN REPOSITORY.</li>
+                    <li>THE MAIN BIT OF CODE IS IN <a href="https://github.com/bokkypoobah/GlicPixxxSurfer/blob/main/docs/index.html" target="_blank">https://github.com/bokkypoobah/GlicPixxxSurfer/blob/main/docs/index.html</a>.</li>
                     <li>TO SEE HOW IT WORKS, SWITCH TO YOUR WEB BEOWSER DEVELOPER CONSOLE AND TRY STRPPING THROUGH THE SOURCE CODE.</li>
                     <li>WRITTEN USING THE <a href="https://bootstrap-vue.org/" target="_blank">https://bootstrap-vue.org/</a> FRAMEWWORK</li>
-                    <li>GENERATES "STATIC" DATA BY COLLATING INFOTMSTION FROM THE TOKEN CONTACT'S <em>tokenURI(...)</em> INFORMATION WITH THE INFOTRMATION FROM OPENSEA.IO.</li>
                     <li>USES <a href="https://github.com/ethers-io/ethers.js/" target="_blank">ETHERS.JS</a> TO CONNECT TO ETHERUEM VIA WEB3 TO RETRIEVE NFT TOKENS OWNED</li>
                     <li>HAS NO TRACKIING TECHNOLOGY. HOWEVER CONNECTIONS FROM THIS APP TO OPENSEA AND YOUR WEB3 PROVIDER WILL LEAK SOME INFORMATION.</li>
                     <li>CAN BE RUN ON YOUR OWN COMPUTER BY CLONING THE GITHUB REPOSITORY AND SERVING THE PAGES USING A WEBSERVER, OR THE "ANYWHERE" SERVER.</li>
                     <li>CAN BE RUN FROM GITHUB PAGES, SO YOU CAN EASILY CLONE, CUSTOMISE AND SERVE YOUR OWN VERSION</li>
-                    <!-- <li>HAS SOME CODE FROM THE IS IT CLEAN TOOL BY <a href="https://twitter.com/yungwknd" target="_blank">@yungwknd</a></li> -->
                   </ul>
                 </b-card-text>
 
                 <h6 class="mt-4 mb-1">SUPPORT A POOR DEVLOPER BASTARD</h6>
                 <b-card-text>
                   <ul>
-                    <li>SEND YOUR FUCKING DONATIONS TO BokkyPooBah.eth. FLOOR BGANPUNKV2S, NFTS, ETH AND ERC20S ALL APPRECIATED. DON'T BE A FUCKING STINGY BASTARD!!!</li>
+                    <li>SEND YOUR FUCKING DONATIONS TO BokkyPooBah.eth. FLOOR GLICPIXXXS, BGANPUNKV2, NFTS, ETH AND ERC20S ALL APPRECIATED. DON'T BE A FUCKING STINGY BASTARD!!!</li>
                   </ul>
                 </b-card-text>
 
@@ -1329,8 +1320,8 @@
               }
               osData[asset.tokenId] = { sellOrder: sellOrder, lastSale: lastSale };
             }
-            console.log(JSON.stringify(osData, null, 8));
-            // this.osData = osData;
+            console.log(JSON.stringify(osData[5], null, 8));
+            this.osData = osData;
             console.log(new Date().toUTCString() + " processOSData() completed");
           },
 
