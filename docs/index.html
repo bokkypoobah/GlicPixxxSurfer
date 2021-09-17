@@ -80,7 +80,7 @@
           <b-card no-body class="mt-1">
             <div>
               <!-- <b-modal size="xl" ref="gif-frame-extraction-modal" hide-footer @shown="onGIFFrameSelectionModalOpened" class="w-100"> -->
-              <b-modal ref="gif-frame-extraction-modal" hide-footer @shown="onGIFFrameSelectionModalOpened" dialog-class="mw-100 w-50">
+              <b-modal ref="gif-frame-extraction-modal" hide-footer @shown="onGIFFrameSelectionModalOpened" dialog-class="mw-100">
                 <template #modal-title>
                   {{ selected.tokenId == null ? null : data[selected.tokenId].name }}
                   <span v-if="selected.resolution"> - Resolution {{ selected.resolution }}</span>
@@ -88,7 +88,7 @@
                   <span v-if="selected.filename"> - Filename {{ selected.filename }}</span>
                 </template>
                 <div class="d-block text-center">
-                  <img id="thegif1" :src="selected.tokenId != null && data[selected.tokenId] ? (ipfsPrefix + selected.filename) : null" :rel:animated_src="selected.tokenId && data[selected.tokenId] ? ipfsPrefix + selected.filename : null" width="600" height="600" rel:auto_play="0" rel:rubbable="1" class="pr-3" />
+                  <img id="thegif1" :src="selected.tokenId != null && data[selected.tokenId] ? (ipfsPrefix + selected.filename) : null" :rel:animated_src="selected.tokenId && data[selected.tokenId] ? ipfsPrefix + selected.filename : null" rel:auto_play="0" rel:rubbable="1" class="pr-3" />
                 </div>
                 <b-input-group v-if="selected.isGIF">
                   <template #prepend>
