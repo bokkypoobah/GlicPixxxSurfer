@@ -86,7 +86,7 @@
                   <span v-if="selectedItemIsGIF"> - Frame {{ selectedItemFrame == null ? '(loading)' : selectedItemFrame }}</span>
                 </template>
                 <div class="d-block text-center">
-                  <img id="thegif1" :src="selectedTokenId != null && data[selectedTokenId] ? data[selectedTokenId].images[0] : null" :rel:animated_src="selectedTokenId && data[selectedTokenId] ? data[selectedTokenId].images[0] : null" width="600" height="600" rel:auto_play="0" rel:rubbable="1" class="pr-3" />
+                  <img id="thegif1" :src="selectedTokenId != null && data[selectedTokenId] ? (ipfsPrefix + data[selectedTokenId].image) : null" :rel:animated_src="selectedTokenId && data[selectedTokenId] ? ipfsPrefix + data[selectedTokenId].image : null" width="600" height="600" rel:auto_play="0" rel:rubbable="1" class="pr-3" />
                 </div>
                 <b-input-group v-if="selectedItemIsGIF">
                   <template #prepend>
@@ -1514,7 +1514,7 @@
           // --- GIF Frame Extraction ---
           async displayToken(tokenId) {
             const xhr = new XMLHttpRequest();
-            xhr.open('GET', this.getData[tokenId].image);
+            xhr.open('GET', this.ipfsPrefix + this.data[tokenId].image);
             const t = this;
             xhr.onload = function() {
               if (xhr.response.substring(0, 3) == "GIF") {
@@ -1546,7 +1546,7 @@
           },
           setFrame() {
             if (this.selectedItemGIF) {
-              this.selectedItemGIF.move_to(this.selectedItemFrame);
+              this.selectedItemGIF.move_to(parseInt(this.selectedItemFrame));
             }
           },
 
