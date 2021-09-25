@@ -1556,25 +1556,18 @@
           },
 
           // --- Export ---
-          downloadOwners() {
-            const content = JSON.stringify(this.owners);
-            const filename = "gpowners.json";
-            const contentType = "text/plain";
+          download(content, filename, contentType) {
             const a = document.createElement("a");
             const file = new Blob([content], { type: contentType });
             a.href = URL.createObjectURL(file);
             a.download = filename;
             a.click();
           },
+          downloadOwners() {
+            this.download(JSON.stringify(this.owners), "gpowners.json", "text/plain");
+          },
           downloadENS() {
-            const content = JSON.stringify(this.ensMap);
-            const filename = "gpens.json";
-            const contentType = "text/plain";
-            const a = document.createElement("a");
-            const file = new Blob([content], { type: contentType });
-            a.href = URL.createObjectURL(file);
-            a.download = filename;
-            a.click();
+            this.download(JSON.stringify(this.ensMap), "gpens.json", "text/plain");
           },
 
           // --- UI Misc ---
