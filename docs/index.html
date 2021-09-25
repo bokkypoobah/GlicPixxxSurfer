@@ -79,7 +79,6 @@
         <div>
           <b-card no-body class="mt-1">
             <div>
-              <!-- <b-modal size="xl" ref="gif-frame-extraction-modal" hide-footer @shown="onGIFFrameSelectionModalOpened" class="w-100"> -->
               <b-modal ref="gif-frame-extraction-modal" hide-footer @shown="onGIFFrameSelectionModalOpened" dialog-class="mw-100">
                 <template #modal-title>
                   {{ selected.tokenId == null ? null : data[selected.tokenId].name }}
@@ -514,6 +513,20 @@
                 </b-card-text>
               </b-tab>
 
+              <b-tab title="EXPORT">
+                <b-card-text>
+                  <b-form-group label-cols="3" content-cols="8" label="Download gpowners.json" :description="'For use with https://github.com/bokkypoobah/GlicPixxxTools'" class="mb-1">
+                    <b-button size="sm" @click="downloadOwners()" variant="outline-primary">
+                      gpowners.json
+                    </b-button>
+                  </b-form-group>
+                  <b-form-group label-cols="3" content-cols="8" label="Download gpens.json" :description="'For use with https://github.com/bokkypoobah/GlicPixxxTools'" class="mb-1">
+                    <b-button size="sm" @click="downloadENS()" variant="outline-primary">
+                      gpens.json
+                    </b-button>
+                  </b-form-group>
+                </b-card-text>
+              </b-tab>
               <!--
               <b-tab lazy title="OWNERS">
                 <b-card-text>
@@ -1540,6 +1553,28 @@
             if (this.selected.isGIF) {
               this.selected.gif.move_to(parseInt(this.selected.frame));
             }
+          },
+
+          // --- Export ---
+          downloadOwners() {
+            const content = JSON.stringify(this.owners);
+            const filename = "gpowners.json";
+            const contentType = "text/plain";
+            const a = document.createElement("a");
+            const file = new Blob([content], { type: contentType });
+            a.href = URL.createObjectURL(file);
+            a.download = filename;
+            a.click();
+          },
+          downloadENS() {
+            const content = JSON.stringify(this.ensMap);
+            const filename = "gpens.json";
+            const contentType = "text/plain";
+            const a = document.createElement("a");
+            const file = new Blob([content], { type: contentType });
+            a.href = URL.createObjectURL(file);
+            a.download = filename;
+            a.click();
           },
 
           // --- UI Misc ---
